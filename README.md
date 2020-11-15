@@ -1,5 +1,8 @@
 # sanic-dantic
-
+![PyPI - Python Version](https://img.shields.io/pypi/pyversions/sanic-dantic)
+![PyPI](https://img.shields.io/pypi/v/sanic-dantic)
+![PyPI - Downloads](https://img.shields.io/pypi/dm/sanic-dantic)
+![PyPI - License](https://img.shields.io/pypi/l/sanic-dantic)
 > sanic-dantic is a request parameter checking and parsing library based on pydantic under the sanic framework
 
 sanic-dantic is a request parameter checking and parsing library based on pydantic under the sanic framework
