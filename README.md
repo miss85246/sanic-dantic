@@ -1,8 +1,8 @@
-# sanic-parsedargs
+# sanic-dantic
 
-> sanic-parsedargs is a request parameter checking and parsing library based on pydantic under the sanic framework
+> sanic-dantic is a request parameter checking and parsing library based on pydantic under the sanic framework
 
-sanic-parsedargs is a request parameter checking and parsing library based on pydantic under the sanic framework
+sanic-dantic is a request parameter checking and parsing library based on pydantic under the sanic framework
 
 It is based on pydantic, which can facilitate developers to quickly check and obtain request parameters
 
