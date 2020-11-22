@@ -1,0 +1,18 @@
+language: python
+python:
+  - '3.6.5'
+  - '3.7'
+  - '3.8'
+before_install:
+  - pip install pydantic
+  - pip install sanic
+install:
+  - pip install sanic-dantic
+script:
+  - python test/server.py
+  - python test/test.py
+deploy:
+  provider: pypi
+  user: miss85246
+  password:
+    secure: g6yEd4s/c9CeabKYomUNOP01m5Oc2dayuuSPuthv5ZgX9V9YQpyzuHR9qRkX86tve09WIEKsaO1SdHV15dJoV9ydyOIUcLm0iaWGyvsRWzGyVQZvtfYQOk8AL0gps7+HDlxa4JuXmKe98RpxZPXMFLXM5r89tnYQ/WOoA/Vu1iSnIJxaLZo6cclsboQH291DyOZ2YJRtoqqlmxocaTSplcD0qVRcxqSgXboEfxGbevPHFJONBQjBGUiSgqxS3jhuykigJE3LIEot8Bcytzo0LCFw3J43IjHbvHDmSESvOZU4PkSljer7kxM9ChDtwUWU9Eas+neObYaKuTgswopS+N9B732IHBMeZ/TDvLeRuC21zjd5EQgq+PeCQczC0YsRKw9Cq/YGOq+ukV4+5W/cwU7k3yIxlf/bhesd52XS/nvBz60b6IJR48+jLkKJ2SH6tyR6qiFXyQNWL3k4LnVlir2oie9xjYrcJ+H2tPWFsQ4YjCJRogmsEt5s2YE80SxakNRqtrHk+NQ+aFNymtRcY4rGP0Mc4BpaaBn9A7tOBRba72vN3k2K4sUguOQ1XjrcgXqCi0kBJABddyiPtyRifjcWayHFlbNYLorTk1fjQLL647D05nIuZNZTQEtXVNNrt3W6rkWS0IYhm4kfS5NOqKtih/hV5B2+M8FBXYhbPI0=

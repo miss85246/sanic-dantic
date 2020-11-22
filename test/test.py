@@ -1,9 +1,9 @@
-from unittest import TestCase
+import unittest
 
 import requests
 
 
-class TestSanicDantic(TestCase):
+class TestSanicDantic(unittest.TestCase):
     def setUp(self):
         self.session = requests.session()
         self.data = {"name": "test", "age": 100}
@@ -46,3 +46,7 @@ class TestSanicDantic(TestCase):
 
     def tearDown(self):
         self.session.close()
+
+
+if __name__ == '__main__':
+    unittest.main()
