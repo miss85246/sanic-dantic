@@ -6,6 +6,7 @@ python:
 before_install:
   - pip install pydantic
   - pip install sanic
+  - pip install requests
 install:
   - pip install sanic-dantic
 before_script:
