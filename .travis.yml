@@ -9,7 +9,7 @@ before_install:
 install:
   - pip install sanic-dantic
 before_script:
-  - python test/server.py
+  - nohup python -u test/server.py &
 script:
   - python test/test.py
 deploy:
