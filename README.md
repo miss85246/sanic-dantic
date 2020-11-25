@@ -1,4 +1,5 @@
 # sanic-dantic
+![Travis (.com)](https://img.shields.io/travis/com/miss85246/sanic-dantic)
 ![PyPI - Python Version](https://img.shields.io/pypi/pyversions/sanic-dantic)
 ![PyPI](https://img.shields.io/pypi/v/sanic-dantic)
 ![PyPI - Downloads](https://img.shields.io/pypi/dm/sanic-dantic)
