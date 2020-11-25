@@ -2,7 +2,7 @@
 from functools import wraps
 
 from pydantic import ValidationError
-from sanic.exceptions import InvalidUsage
+from sanic.exceptions import InvalidUsage, ServerError
 from sanic.log import logger
 from sanic.views import HTTPMethodView
 
@@ -33,12 +33,9 @@ def validate(request, query, body, path, form):
     """
     parsed_args = ParsedArgsObj()
     if body and form:
-        raise InvalidOperation("body model cannot exist at the same time as form model")
+        raise InvalidOperation("sanic-dantic: body model cannot exist at the same time as form model")
     if body and request.method not in ["POST", "PUT", "PATCH"]:
-        raise InvalidOperation(
-            f"Http method '{request.method}' does not contain a payload,"
-            "yet a `Pyndatic` model for body was supplied"
-        )
+        raise InvalidOperation("sanic-dantic: body model must be used together with one of ['POST','PUT','PATCH']")
 
     if path:
         parsed_args.update(path(**request.match_info).dict())
@@ -70,7 +67,7 @@ def parse_params(query=None, body=None, path=None, form=None):
                 raise InvalidUsage(message)
             except InvalidOperation as e:
                 logger.error(e)
-                raise e
+                raise ServerError(e)
             kwargs.update({'params': result})
             _request.ctx.params = result
             response = await f(request, *args, **kwargs)
@@ -79,4 +76,3 @@ def parse_params(query=None, body=None, path=None, form=None):
         return decorated_function
 
     return decorator
-
