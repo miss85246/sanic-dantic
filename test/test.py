@@ -69,7 +69,7 @@ class SanicDanticTestView(HTTPMethodView):
 app.add_route(SanicDanticTestView.as_view(), '/cbv_test')
 
 
-class TestSanicDantic(unittest.IsolatedAsyncioTestCase):
+class TestSanicDantic(unittest.TestCase):
 
     def setUp(self):
         self.data = {"name": "test", "age": 100}
