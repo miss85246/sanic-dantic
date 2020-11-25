@@ -9,8 +9,6 @@ before_install:
   - pip install requests
 install:
   - pip install sanic-dantic
-before_script:
-  - nohup python -u test/server.py &
 script:
   - python test/test.py
 deploy:
