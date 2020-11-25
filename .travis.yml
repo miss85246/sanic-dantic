@@ -9,7 +9,6 @@ before_install:
 install:
   - pip install sanic-dantic
 script:
-  - python test/server.py
   - python test/test.py
 deploy:
   provider: pypi
