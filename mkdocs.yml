@@ -1,0 +1,14 @@
+site_name: sanic-dantic
+
+theme:
+  name: 'material'
+  palette:
+    primary: teal
+    accent: light blue
+
+extra:
+  social:
+    - icon: fontawesome/brands/github
+      link: https://github.com/miss85246/sanic-dantic
+
+copyright: Copyright &copy; 2020 Connor Zhang
