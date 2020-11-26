@@ -32,10 +32,10 @@ def parse_params(method: [str] = None, path=None, query=None, form=None, body=No
         @wraps(f)
         async def decorated_function(request, *args, **kwargs):
             _request = args[0] if isinstance(request, HTTPMethodView) else request
-            if (method and _request.method.lower() in method) or not method:
+            if (method and _request.method.upper() in [_.upper() for _ in method]) or not method:
                 try:
                     model_obj = DanticModelObj(path=path, query=query, form=form, body=body)
-                    parsed_args = validate(_request, *model_obj.items)
+                    parsed_args = validate(_request, **model_obj.items)
                 except ValidationError as e:
                     error_messages = e.errors()[0]
                     message = f'{error_messages.get("loc")[0]} {error_messages.get("msg")}'

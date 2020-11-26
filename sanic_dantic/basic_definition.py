@@ -22,6 +22,8 @@ class DanticModelObj:
         :param body: pydantic.BaseModel
         """
         items = {'path': path, 'query': query, 'form': form, 'body': body}
+        if body and form:
+            raise InvalidOperation("sanic-dantic: body model cannot exist at the same time as form model")
         for item, model in items.items():
             if model is not None and BaseModel not in [_ for _ in getmro(model)]:
                 raise TypeError("param must type of pydantic.BaseModel")
@@ -36,7 +38,7 @@ class InvalidOperation(BaseException):
     pass
 
 
-def validate(request, query=None, body=None, path=None, form=None):
+def validate(request, path=None, query=None, form=None, body=None):
     """
     When there are the same parameter name in the model, the parameter in ParsedArgsObj will be overwritten,
     The priorities is: body = form > query > path \n
@@ -48,8 +50,6 @@ def validate(request, query=None, body=None, path=None, form=None):
     :return parsed_args: ParsedArgsObj
     """
     parsed_args = ParsedArgsObj()
-    if body and form:
-        raise InvalidOperation("sanic-dantic: body model cannot exist at the same time as form model")
     if body and request.method not in ["POST", "PUT", "PATCH"]:
         raise InvalidOperation("sanic-dantic: body model must be used together with one of ['POST','PUT','PATCH']")
 
