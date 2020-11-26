@@ -5,13 +5,21 @@ python:
 before_install:
   - pip install pydantic
   - pip install sanic
-  - pip install codecov 
+  - pip install codecov
   - pip install coverage
 install:
   - pip install sanic-dantic
+  - pip install mkdocs
 script:
   - python test/test.py
+  - python test/base_test.py
+  - python test/sanic_class_dantic_test.py
+  - python test/sanic_function_dantic_test.py
   - coverage run test/test.py
+  - coverage run test/base_test.py
+  - coverage run test/sanic_class_dantic_test.py
+  - coverage run test/sanic_function_dantic_test.py
+  - mkdocs gh-deploy
 deploy:
   provider: pypi
   user: miss85246
