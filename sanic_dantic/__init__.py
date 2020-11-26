@@ -1,11 +1,13 @@
 # -*- coding: utf-8 -*-
-from .sanic_dantic import parse_params
 from pydantic import *
+
+from .sanic_class_dantic import DanticView
+from .sanic_function_dantic import parse_params
 
 __author__ = "Connor Zhang"
 __copyright__ = "Copyright 2020, Connor Zhang"
 __license__ = "MIT"
-__version__ = "1.0.4"
+__version__ = "1.1.0"
 __all__ = [
     # dataclasses
     'dataclasses',
@@ -87,6 +89,7 @@ __all__ = [
     'StrictFloat',
     'PaymentCardNumber',
     'ByteSize',
-    # sanic-sanic_dantic
-    'parse_params'
+    # sanic-dantic
+    'parse_params',
+    'DanticView'
 ]
