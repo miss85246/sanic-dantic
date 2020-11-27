@@ -16,7 +16,7 @@ app = Sanic("SanicDanticExample")
 
 
 class HTTPMethodTestView(HTTPMethodView):
-    decorators = [parse_params(method=['POST'], body=Person)]
+    decorators = [parse_params(methods=['POST'], body=Person)]
 
     @parse_params(query=Person)
     async def get(self, request, params):
@@ -30,7 +30,7 @@ class HTTPMethodTestView(HTTPMethodView):
 
 
 class DanticTestView(DanticView):
-    decorators = [parse_params(method=['POST'], form=Person)]
+    decorators = [parse_params(methods=['POST'], form=Person)]
 
     async def get(self, request, params):
         return json({"params": params, "request.ctx.params": request.ctx.params})
