@@ -5,11 +5,11 @@ with open("README.md", "r") as fh:
 
 setuptools.setup(
     name="sanic-dantic",
-    version="1.1.2",
+    version="1.1.3",
     author="Connor Zhang",
     author_email="chzhangyue@outlook.com",
     description="A request parameter checking and parsing library based on pydantic under the sanic framework",
-    install_requires=['pydantic>=1.7.2'],
+    install_requires=['pydantic>=1.7.2', 'nest-asyncio>=1.4.2'],
     long_description=long_description,
     long_description_content_type="text/markdown",
     url="https://github.com/misss85246/sanic-dantic",
