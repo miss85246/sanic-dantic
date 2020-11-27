@@ -14,7 +14,7 @@ script:
   - python setup.py check
   - python setup.py build
   - python setup.py install
-  - pip uninstall uvloop
+  - pip uninstall uvloop -y
   - python test/test.py
   - coverage run test/test.py
 deploy:
