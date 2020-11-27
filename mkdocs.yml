@@ -5,10 +5,6 @@ theme:
   palette:
     primary: teal
     accent: light blue
-  highlightjs: true
-  hljs_languages:
-    - shell
-    - python
 
 nav:
   - Overview: index.md
@@ -22,6 +18,9 @@ nav:
   - Thanks: Thanks.md
   - License: License.md
 
+markdown_extensions:
+  - markdown.extensions.codehilite:
+      guess_lang: true
 extra:
   social:
     - icon: fontawesome/brands/github
