@@ -391,86 +391,87 @@
 <p>Although sanic-dantic can help you improve the inspection efficiency, it is not omnipotent.</p>
 <h2 id="dont-use-form-with-body">Don't use form with body</h2>
 <p>Both <code>form</code> and <code>json</code> use request.json to pass parameters, but their formats are completely different</p>
-<pre><code class="language-shell">form: name=test&amp;age=12
-json: {&quot;name&quot;:&quot;test&quot;, &quot;age&quot;:12}
-</code></pre>
+<div class="codehilite"><pre><span></span><code>form: <span class="nv">name</span><span class="o">=</span>test<span class="p">&amp;</span><span class="nv">age</span><span class="o">=</span><span class="m">12</span>
+json: <span class="o">{</span><span class="s2">&quot;name&quot;</span>:<span class="s2">&quot;test&quot;</span>, <span class="s2">&quot;age&quot;</span>:12<span class="o">}</span>
+</code></pre></div>
+
 <p>If you use form with body, It's will raise ServerError:</p>
-<pre><code class="language-python">import unittest
-from sanic import Sanic
+<div class="codehilite"><pre><span></span><code><span class="kn">import</span> <span class="nn">unittest</span>
+<span class="kn">from</span> <span class="nn">sanic</span> <span class="kn">import</span> <span class="n">Sanic</span>
 
-from sanic_dantic import parse_params, BaseModel
-
-
-class Person(BaseModel):
-    name: str
-    age: int
+<span class="kn">from</span> <span class="nn">sanic_dantic</span> <span class="kn">import</span> <span class="n">parse_params</span><span class="p">,</span> <span class="n">BaseModel</span>
 
 
-app = Sanic(&quot;SanicDanticExample&quot;)
-
-@app.route('/body_and_form_test', methods=['POST'])
-@parse_params(body=Person, form=Person)
-async def body_and_form_test(request, params):
-    pass
+<span class="k">class</span> <span class="nc">Person</span><span class="p">(</span><span class="n">BaseModel</span><span class="p">):</span>
+    <span class="n">name</span><span class="p">:</span> <span class="nb">str</span>
+    <span class="n">age</span><span class="p">:</span> <span class="nb">int</span>
 
 
+<span class="n">app</span> <span class="o">=</span> <span class="n">Sanic</span><span class="p">(</span><span class="s2">&quot;SanicDanticExample&quot;</span><span class="p">)</span>
 
-class TestSanicDantic(unittest.TestCase):
+<span class="nd">@app</span><span class="o">.</span><span class="n">route</span><span class="p">(</span><span class="s1">&#39;/body_and_form_test&#39;</span><span class="p">,</span> <span class="n">methods</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;POST&#39;</span><span class="p">])</span>
+<span class="nd">@parse_params</span><span class="p">(</span><span class="n">body</span><span class="o">=</span><span class="n">Person</span><span class="p">,</span> <span class="n">form</span><span class="o">=</span><span class="n">Person</span><span class="p">)</span>
+<span class="k">async</span> <span class="k">def</span> <span class="nf">body_and_form_test</span><span class="p">(</span><span class="n">request</span><span class="p">,</span> <span class="n">params</span><span class="p">):</span>
+    <span class="k">pass</span>
 
-    def setUp(self):
-        self.data = {&quot;name&quot;: &quot;test&quot;, &quot;age&quot;: 100}
-        self.client = app.test_client
-        self.expected_result = {&quot;params&quot;: self.data, &quot;request.ctx.params&quot;: self.data}
 
-    def test_body_and_form(self):
-        url = &quot;/body_and_form_test&quot;
-        req, res = self.client.post(url, json=self.data, data=self.data)
-        self.assertEqual(res.status_code, 500), res.status_code
 
-if __name__ == '__main__':
-    unittest.main()
+<span class="k">class</span> <span class="nc">TestSanicDantic</span><span class="p">(</span><span class="n">unittest</span><span class="o">.</span><span class="n">TestCase</span><span class="p">):</span>
 
-</code></pre>
+    <span class="k">def</span> <span class="nf">setUp</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">data</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;test&quot;</span><span class="p">,</span> <span class="s2">&quot;age&quot;</span><span class="p">:</span> <span class="mi">100</span><span class="p">}</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">client</span> <span class="o">=</span> <span class="n">app</span><span class="o">.</span><span class="n">test_client</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">expected_result</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;params&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">,</span> <span class="s2">&quot;request.ctx.params&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">}</span>
+
+    <span class="k">def</span> <span class="nf">test_body_and_form</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">url</span> <span class="o">=</span> <span class="s2">&quot;/body_and_form_test&quot;</span>
+        <span class="n">req</span><span class="p">,</span> <span class="n">res</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">client</span><span class="o">.</span><span class="n">post</span><span class="p">(</span><span class="n">url</span><span class="p">,</span> <span class="n">json</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">,</span> <span class="n">data</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">assertEqual</span><span class="p">(</span><span class="n">res</span><span class="o">.</span><span class="n">status_code</span><span class="p">,</span> <span class="mi">500</span><span class="p">),</span> <span class="n">res</span><span class="o">.</span><span class="n">status_code</span>
+
+<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s1">&#39;__main__&#39;</span><span class="p">:</span>
+    <span class="n">unittest</span><span class="o">.</span><span class="n">main</span><span class="p">()</span>
+</code></pre></div>
+
 <h2 id="the-same-param-name-will-be-overwritten">The same param name will be overwritten</h2>
 <p>sanic-dantic's type checking has a sequence, and if you use the same parameter name, some parameters may be overwritten</p>
 <p>Their priorities are: <code>form</code> = <code>body</code> &gt; <code>query</code> &gt; <code>path</code></p>
-<pre><code class="language-python">import unittest
-from sanic import Sanic
-from sanic.response import json
-from sanic_dantic import parse_params, BaseModel
+<div class="codehilite"><pre><span></span><code><span class="kn">import</span> <span class="nn">unittest</span>
+<span class="kn">from</span> <span class="nn">sanic</span> <span class="kn">import</span> <span class="n">Sanic</span>
+<span class="kn">from</span> <span class="nn">sanic.response</span> <span class="kn">import</span> <span class="n">json</span>
+<span class="kn">from</span> <span class="nn">sanic_dantic</span> <span class="kn">import</span> <span class="n">parse_params</span><span class="p">,</span> <span class="n">BaseModel</span>
 
 
-class Person(BaseModel):
-    name: str
-    age: int
+<span class="k">class</span> <span class="nc">Person</span><span class="p">(</span><span class="n">BaseModel</span><span class="p">):</span>
+    <span class="n">name</span><span class="p">:</span> <span class="nb">str</span>
+    <span class="n">age</span><span class="p">:</span> <span class="nb">int</span>
 
 
-app = Sanic(&quot;SanicDanticExample&quot;)
+<span class="n">app</span> <span class="o">=</span> <span class="n">Sanic</span><span class="p">(</span><span class="s2">&quot;SanicDanticExample&quot;</span><span class="p">)</span>
 
-@app.route('/overwritten_test', methods=['POST'])
-@parse_params(body=Person, query=Person)
-async def overwritten_test(request, params):
-    return json({&quot;params&quot;: params, &quot;request.ctx.params&quot;: request.ctx.params})
+<span class="nd">@app</span><span class="o">.</span><span class="n">route</span><span class="p">(</span><span class="s1">&#39;/overwritten_test&#39;</span><span class="p">,</span> <span class="n">methods</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;POST&#39;</span><span class="p">])</span>
+<span class="nd">@parse_params</span><span class="p">(</span><span class="n">body</span><span class="o">=</span><span class="n">Person</span><span class="p">,</span> <span class="n">query</span><span class="o">=</span><span class="n">Person</span><span class="p">)</span>
+<span class="k">async</span> <span class="k">def</span> <span class="nf">overwritten_test</span><span class="p">(</span><span class="n">request</span><span class="p">,</span> <span class="n">params</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">json</span><span class="p">({</span><span class="s2">&quot;params&quot;</span><span class="p">:</span> <span class="n">params</span><span class="p">,</span> <span class="s2">&quot;request.ctx.params&quot;</span><span class="p">:</span> <span class="n">request</span><span class="o">.</span><span class="n">ctx</span><span class="o">.</span><span class="n">params</span><span class="p">})</span>
 
 
 
-class TestSanicDantic(unittest.TestCase):
+<span class="k">class</span> <span class="nc">TestSanicDantic</span><span class="p">(</span><span class="n">unittest</span><span class="o">.</span><span class="n">TestCase</span><span class="p">):</span>
 
-    def setUp(self):
-        self.data = {&quot;name&quot;: &quot;test&quot;, &quot;age&quot;: 100}
-        self.client = app.test_client
-        self.expected_result = {&quot;params&quot;: self.data, &quot;request.ctx.params&quot;: self.data}
+    <span class="k">def</span> <span class="nf">setUp</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">data</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;test&quot;</span><span class="p">,</span> <span class="s2">&quot;age&quot;</span><span class="p">:</span> <span class="mi">100</span><span class="p">}</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">client</span> <span class="o">=</span> <span class="n">app</span><span class="o">.</span><span class="n">test_client</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">expected_result</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;params&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">,</span> <span class="s2">&quot;request.ctx.params&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">}</span>
 
-    def test_param_overwritten(self):
-        url = &quot;/overwritten_test&quot;
-        params = {&quot;name&quot;:&quot;test&quot;, &quot;age&quot;:100}
-        data = {&quot;name&quot;:&quot;test&quot;, &quot;age&quot;:200}
-        req, res = self.client.post(url, json=data, params=params)
-        self.assertEqual(res.json, {&quot;params&quot;:data, &quot;ctx.params&quot;:data})
+    <span class="k">def</span> <span class="nf">test_param_overwritten</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">url</span> <span class="o">=</span> <span class="s2">&quot;/overwritten_test&quot;</span>
+        <span class="n">params</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;name&quot;</span><span class="p">:</span><span class="s2">&quot;test&quot;</span><span class="p">,</span> <span class="s2">&quot;age&quot;</span><span class="p">:</span><span class="mi">100</span><span class="p">}</span>
+        <span class="n">data</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;name&quot;</span><span class="p">:</span><span class="s2">&quot;test&quot;</span><span class="p">,</span> <span class="s2">&quot;age&quot;</span><span class="p">:</span><span class="mi">200</span><span class="p">}</span>
+        <span class="n">req</span><span class="p">,</span> <span class="n">res</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">client</span><span class="o">.</span><span class="n">post</span><span class="p">(</span><span class="n">url</span><span class="p">,</span> <span class="n">json</span><span class="o">=</span><span class="n">data</span><span class="p">,</span> <span class="n">params</span><span class="o">=</span><span class="n">params</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">assertEqual</span><span class="p">(</span><span class="n">res</span><span class="o">.</span><span class="n">json</span><span class="p">,</span> <span class="p">{</span><span class="s2">&quot;params&quot;</span><span class="p">:</span><span class="n">data</span><span class="p">,</span> <span class="s2">&quot;ctx.params&quot;</span><span class="p">:</span><span class="n">data</span><span class="p">})</span>
 
-if __name__ == '__main__':
-    unittest.main()
-</code></pre>
+<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s1">&#39;__main__&#39;</span><span class="p">:</span>
+    <span class="n">unittest</span><span class="o">.</span><span class="n">main</span><span class="p">()</span>
+</code></pre></div>
                 
               
               

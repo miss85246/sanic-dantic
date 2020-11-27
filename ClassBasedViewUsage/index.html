@@ -406,156 +406,157 @@
                 <h1 id="class-based-view-usage">Class-Based View Usage</h1>
 <h2 id="use-like-fbv">Use like FBV</h2>
 <p>In class-based view, you can also use sanic-dantic like FBV:</p>
-<pre><code class="language-python">import unittest
+<div class="codehilite"><pre><span></span><code><span class="kn">import</span> <span class="nn">unittest</span>
 
-from sanic import Sanic
-from sanic.response import json
-from sanic.views import HTTPMethodView
+<span class="kn">from</span> <span class="nn">sanic</span> <span class="kn">import</span> <span class="n">Sanic</span>
+<span class="kn">from</span> <span class="nn">sanic.response</span> <span class="kn">import</span> <span class="n">json</span>
+<span class="kn">from</span> <span class="nn">sanic.views</span> <span class="kn">import</span> <span class="n">HTTPMethodView</span>
 
-from sanic_dantic import parse_params, BaseModel
-
-
-class Person(BaseModel):
-    name: str
-    age: int
+<span class="kn">from</span> <span class="nn">sanic_dantic</span> <span class="kn">import</span> <span class="n">parse_params</span><span class="p">,</span> <span class="n">BaseModel</span>
 
 
-app = Sanic(&quot;SanicDanticExample&quot;)
+<span class="k">class</span> <span class="nc">Person</span><span class="p">(</span><span class="n">BaseModel</span><span class="p">):</span>
+    <span class="n">name</span><span class="p">:</span> <span class="nb">str</span>
+    <span class="n">age</span><span class="p">:</span> <span class="nb">int</span>
 
 
-class HTTPMethodTestView(HTTPMethodView):
-
-    @parse_params(query=Person)
-    async def get(self, request, params):
-        return json({&quot;params&quot;: params, &quot;request.ctx.params&quot;: request.ctx.params})
+<span class="n">app</span> <span class="o">=</span> <span class="n">Sanic</span><span class="p">(</span><span class="s2">&quot;SanicDanticExample&quot;</span><span class="p">)</span>
 
 
-app.add_route(HTTPMethodTestView.as_view(), '/http_test')
+<span class="k">class</span> <span class="nc">HTTPMethodTestView</span><span class="p">(</span><span class="n">HTTPMethodView</span><span class="p">):</span>
+
+    <span class="nd">@parse_params</span><span class="p">(</span><span class="n">query</span><span class="o">=</span><span class="n">Person</span><span class="p">)</span>
+    <span class="k">async</span> <span class="k">def</span> <span class="nf">get</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">request</span><span class="p">,</span> <span class="n">params</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">json</span><span class="p">({</span><span class="s2">&quot;params&quot;</span><span class="p">:</span> <span class="n">params</span><span class="p">,</span> <span class="s2">&quot;request.ctx.params&quot;</span><span class="p">:</span> <span class="n">request</span><span class="o">.</span><span class="n">ctx</span><span class="o">.</span><span class="n">params</span><span class="p">})</span>
 
 
-class TestSanicDantic(unittest.TestCase):
+<span class="n">app</span><span class="o">.</span><span class="n">add_route</span><span class="p">(</span><span class="n">HTTPMethodTestView</span><span class="o">.</span><span class="n">as_view</span><span class="p">(),</span> <span class="s1">&#39;/http_test&#39;</span><span class="p">)</span>
 
-    def setUp(self):
-        self.data = {&quot;name&quot;: &quot;test&quot;, &quot;age&quot;: 100}
-        self.client = app.test_client
-        self.expected_result = {&quot;params&quot;: self.data, &quot;request.ctx.params&quot;: self.data}
 
-    def test_http_method_view_get_test(self):
-        url = f'/http_test'
-        req, res = self.client.get(url, params=self.data)
-        self.assertEqual(res.status_code, 200), res.status_code
-        self.assertEqual(res.json, self.expected_result), f&quot;response: {res} \n expected_result: {self.expected_result}&quot;
+<span class="k">class</span> <span class="nc">TestSanicDantic</span><span class="p">(</span><span class="n">unittest</span><span class="o">.</span><span class="n">TestCase</span><span class="p">):</span>
 
-</code></pre>
+    <span class="k">def</span> <span class="nf">setUp</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">data</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;test&quot;</span><span class="p">,</span> <span class="s2">&quot;age&quot;</span><span class="p">:</span> <span class="mi">100</span><span class="p">}</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">client</span> <span class="o">=</span> <span class="n">app</span><span class="o">.</span><span class="n">test_client</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">expected_result</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;params&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">,</span> <span class="s2">&quot;request.ctx.params&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">}</span>
+
+    <span class="k">def</span> <span class="nf">test_http_method_view_get_test</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">url</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;/http_test&#39;</span>
+        <span class="n">req</span><span class="p">,</span> <span class="n">res</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">client</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">url</span><span class="p">,</span> <span class="n">params</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">assertEqual</span><span class="p">(</span><span class="n">res</span><span class="o">.</span><span class="n">status_code</span><span class="p">,</span> <span class="mi">200</span><span class="p">),</span> <span class="n">res</span><span class="o">.</span><span class="n">status_code</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">assertEqual</span><span class="p">(</span><span class="n">res</span><span class="o">.</span><span class="n">json</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">expected_result</span><span class="p">),</span> <span class="sa">f</span><span class="s2">&quot;response: </span><span class="si">{</span><span class="n">res</span><span class="si">}</span><span class="s2"> </span><span class="se">\n</span><span class="s2"> expected_result: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">expected_result</span><span class="si">}</span><span class="s2">&quot;</span>
+</code></pre></div>
+
 <h2 id="pass-it-to-httpmethodviews-decorators">Pass it to HTTPMethodView's decorators</h2>
 <p>You can also passed it to HTTPMethodView's decorators:</p>
 <p>parameter <code>methods</code> is not required. it will be applicable to all view checks if don't give</p>
-<pre><code class="language-python">import unittest
+<div class="codehilite"><pre><span></span><code><span class="kn">import</span> <span class="nn">unittest</span>
 
-from sanic import Sanic
-from sanic.response import json
-from sanic.views import HTTPMethodView
+<span class="kn">from</span> <span class="nn">sanic</span> <span class="kn">import</span> <span class="n">Sanic</span>
+<span class="kn">from</span> <span class="nn">sanic.response</span> <span class="kn">import</span> <span class="n">json</span>
+<span class="kn">from</span> <span class="nn">sanic.views</span> <span class="kn">import</span> <span class="n">HTTPMethodView</span>
 
-from sanic_dantic import parse_params, BaseModel
-
-
-class Person(BaseModel):
-    name: str
-    age: int
+<span class="kn">from</span> <span class="nn">sanic_dantic</span> <span class="kn">import</span> <span class="n">parse_params</span><span class="p">,</span> <span class="n">BaseModel</span>
 
 
-app = Sanic(&quot;SanicDanticExample&quot;)
+<span class="k">class</span> <span class="nc">Person</span><span class="p">(</span><span class="n">BaseModel</span><span class="p">):</span>
+    <span class="n">name</span><span class="p">:</span> <span class="nb">str</span>
+    <span class="n">age</span><span class="p">:</span> <span class="nb">int</span>
 
 
-class HTTPMethodTestView(HTTPMethodView):
-    decorators = [parse_params(methods=['POST'], body=Person)]
-
-    async def post(self, request, params):
-        return json({&quot;params&quot;: params, &quot;request.ctx.params&quot;: request.ctx.params})
+<span class="n">app</span> <span class="o">=</span> <span class="n">Sanic</span><span class="p">(</span><span class="s2">&quot;SanicDanticExample&quot;</span><span class="p">)</span>
 
 
-app.add_route(HTTPMethodTestView.as_view(), '/http_test')
+<span class="k">class</span> <span class="nc">HTTPMethodTestView</span><span class="p">(</span><span class="n">HTTPMethodView</span><span class="p">):</span>
+    <span class="n">decorators</span> <span class="o">=</span> <span class="p">[</span><span class="n">parse_params</span><span class="p">(</span><span class="n">methods</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;POST&#39;</span><span class="p">],</span> <span class="n">body</span><span class="o">=</span><span class="n">Person</span><span class="p">)]</span>
+
+    <span class="k">async</span> <span class="k">def</span> <span class="nf">post</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">request</span><span class="p">,</span> <span class="n">params</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">json</span><span class="p">({</span><span class="s2">&quot;params&quot;</span><span class="p">:</span> <span class="n">params</span><span class="p">,</span> <span class="s2">&quot;request.ctx.params&quot;</span><span class="p">:</span> <span class="n">request</span><span class="o">.</span><span class="n">ctx</span><span class="o">.</span><span class="n">params</span><span class="p">})</span>
 
 
-class TestSanicDantic(unittest.TestCase):
+<span class="n">app</span><span class="o">.</span><span class="n">add_route</span><span class="p">(</span><span class="n">HTTPMethodTestView</span><span class="o">.</span><span class="n">as_view</span><span class="p">(),</span> <span class="s1">&#39;/http_test&#39;</span><span class="p">)</span>
 
-    def setUp(self):
-        self.data = {&quot;name&quot;: &quot;test&quot;, &quot;age&quot;: 100}
-        self.client = app.test_client
-        self.expected_result = {&quot;params&quot;: self.data, &quot;request.ctx.params&quot;: self.data}
 
-    def test_http_method_view_post_test(self):
-        url = f'/http_test'
-        req, res = self.client.post(url, json=self.data)
-        self.assertEqual(res.status_code, 200), res.status_code
-        self.assertEqual(res.json, self.expected_result), f&quot;response: {res} \n expected_result: {self.expected_result}&quot;
+<span class="k">class</span> <span class="nc">TestSanicDantic</span><span class="p">(</span><span class="n">unittest</span><span class="o">.</span><span class="n">TestCase</span><span class="p">):</span>
 
-</code></pre>
+    <span class="k">def</span> <span class="nf">setUp</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">data</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;test&quot;</span><span class="p">,</span> <span class="s2">&quot;age&quot;</span><span class="p">:</span> <span class="mi">100</span><span class="p">}</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">client</span> <span class="o">=</span> <span class="n">app</span><span class="o">.</span><span class="n">test_client</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">expected_result</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;params&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">,</span> <span class="s2">&quot;request.ctx.params&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">}</span>
+
+    <span class="k">def</span> <span class="nf">test_http_method_view_post_test</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">url</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;/http_test&#39;</span>
+        <span class="n">req</span><span class="p">,</span> <span class="n">res</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">client</span><span class="o">.</span><span class="n">post</span><span class="p">(</span><span class="n">url</span><span class="p">,</span> <span class="n">json</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">assertEqual</span><span class="p">(</span><span class="n">res</span><span class="o">.</span><span class="n">status_code</span><span class="p">,</span> <span class="mi">200</span><span class="p">),</span> <span class="n">res</span><span class="o">.</span><span class="n">status_code</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">assertEqual</span><span class="p">(</span><span class="n">res</span><span class="o">.</span><span class="n">json</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">expected_result</span><span class="p">),</span> <span class="sa">f</span><span class="s2">&quot;response: </span><span class="si">{</span><span class="n">res</span><span class="si">}</span><span class="s2"> </span><span class="se">\n</span><span class="s2"> expected_result: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">expected_result</span><span class="si">}</span><span class="s2">&quot;</span>
+</code></pre></div>
+
 <h2 id="use-danticview">Use DanticView</h2>
 <p>If you don't like use decorator way, you can use <code>DanticView</code>.</p>
 <p><code>DanticView</code> is Inherited from <code>HTTPMethodView</code>, In here, you needn't to use a decorator to complete the type check.</p>
 <p>You can define method model like define method function, sanic-dantic will be parsed and help you check it.</p>
-<pre><code class="language-python">import unittest
-from sanic import Sanic
-from sanic.response import json
+<div class="codehilite"><pre><span></span><code><span class="kn">import</span> <span class="nn">unittest</span>
+<span class="kn">from</span> <span class="nn">sanic</span> <span class="kn">import</span> <span class="n">Sanic</span>
+<span class="kn">from</span> <span class="nn">sanic.response</span> <span class="kn">import</span> <span class="n">json</span>
 
-from sanic_dantic import parse_params, BaseModel, DanticView
-
-
-class Person(BaseModel):
-    name: str
-    age: int
+<span class="kn">from</span> <span class="nn">sanic_dantic</span> <span class="kn">import</span> <span class="n">parse_params</span><span class="p">,</span> <span class="n">BaseModel</span><span class="p">,</span> <span class="n">DanticView</span>
 
 
-app = Sanic(&quot;SanicDanticExample&quot;)
+<span class="k">class</span> <span class="nc">Person</span><span class="p">(</span><span class="n">BaseModel</span><span class="p">):</span>
+    <span class="n">name</span><span class="p">:</span> <span class="nb">str</span>
+    <span class="n">age</span><span class="p">:</span> <span class="nb">int</span>
 
 
-class DanticTestView(DanticView):
-    decorators = [parse_params(methods=['POST'], form=Person)]
-
-    async def get(self, request, params):
-        return json({&quot;params&quot;: params, &quot;request.ctx.params&quot;: request.ctx.params})
-
-    async def post(self, request, params):
-        return json({&quot;params&quot;: params, &quot;request.ctx.params&quot;: request.ctx.params})
-
-    @parse_params(body=Person)
-    async def put(self, request, params):
-        return json({&quot;params&quot;: params, &quot;request.ctx.params&quot;: request.ctx.params})
-
-    # Format: method_model
-    def get_model(self):    # You need define this function if you want check method
-        return self.DanticModel(query=Person) # DanticModel is DanticView's Attribute
+<span class="n">app</span> <span class="o">=</span> <span class="n">Sanic</span><span class="p">(</span><span class="s2">&quot;SanicDanticExample&quot;</span><span class="p">)</span>
 
 
-app.add_route(DanticTestView.as_view(), '/dantic_test')
+<span class="k">class</span> <span class="nc">DanticTestView</span><span class="p">(</span><span class="n">DanticView</span><span class="p">):</span>
+    <span class="n">decorators</span> <span class="o">=</span> <span class="p">[</span><span class="n">parse_params</span><span class="p">(</span><span class="n">methods</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;POST&#39;</span><span class="p">],</span> <span class="n">form</span><span class="o">=</span><span class="n">Person</span><span class="p">)]</span>
+
+    <span class="k">async</span> <span class="k">def</span> <span class="nf">get</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">request</span><span class="p">,</span> <span class="n">params</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">json</span><span class="p">({</span><span class="s2">&quot;params&quot;</span><span class="p">:</span> <span class="n">params</span><span class="p">,</span> <span class="s2">&quot;request.ctx.params&quot;</span><span class="p">:</span> <span class="n">request</span><span class="o">.</span><span class="n">ctx</span><span class="o">.</span><span class="n">params</span><span class="p">})</span>
+
+    <span class="k">async</span> <span class="k">def</span> <span class="nf">post</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">request</span><span class="p">,</span> <span class="n">params</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">json</span><span class="p">({</span><span class="s2">&quot;params&quot;</span><span class="p">:</span> <span class="n">params</span><span class="p">,</span> <span class="s2">&quot;request.ctx.params&quot;</span><span class="p">:</span> <span class="n">request</span><span class="o">.</span><span class="n">ctx</span><span class="o">.</span><span class="n">params</span><span class="p">})</span>
+
+    <span class="nd">@parse_params</span><span class="p">(</span><span class="n">body</span><span class="o">=</span><span class="n">Person</span><span class="p">)</span>
+    <span class="k">async</span> <span class="k">def</span> <span class="nf">put</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">request</span><span class="p">,</span> <span class="n">params</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">json</span><span class="p">({</span><span class="s2">&quot;params&quot;</span><span class="p">:</span> <span class="n">params</span><span class="p">,</span> <span class="s2">&quot;request.ctx.params&quot;</span><span class="p">:</span> <span class="n">request</span><span class="o">.</span><span class="n">ctx</span><span class="o">.</span><span class="n">params</span><span class="p">})</span>
+
+    <span class="c1"># Format: method_model</span>
+    <span class="k">def</span> <span class="nf">get_model</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>    <span class="c1"># You need define this function if you want check method</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">DanticModel</span><span class="p">(</span><span class="n">query</span><span class="o">=</span><span class="n">Person</span><span class="p">)</span> <span class="c1"># DanticModel is DanticView&#39;s Attribute</span>
 
 
-class TestSanicDantic(unittest.TestCase):
+<span class="n">app</span><span class="o">.</span><span class="n">add_route</span><span class="p">(</span><span class="n">DanticTestView</span><span class="o">.</span><span class="n">as_view</span><span class="p">(),</span> <span class="s1">&#39;/dantic_test&#39;</span><span class="p">)</span>
 
-    def setUp(self):
-        self.data = {&quot;name&quot;: &quot;test&quot;, &quot;age&quot;: 100}
-        self.client = app.test_client
-        self.expected_result = {&quot;params&quot;: self.data, &quot;request.ctx.params&quot;: self.data}
 
-    def test_dantic_method_view_get_test(self):
-        url = '/dantic_test'
-        req, res = self.client.get(url, params=self.data)
-        self.assertEqual(res.status_code, 200), res.status_code
-        self.assertEqual(res.json, self.expected_result), f&quot;response: {res} \n expected_result: {self.expected_result}&quot;
+<span class="k">class</span> <span class="nc">TestSanicDantic</span><span class="p">(</span><span class="n">unittest</span><span class="o">.</span><span class="n">TestCase</span><span class="p">):</span>
 
-    def test_dantic_method_view_post_test(self):
-        url = &quot;/dantic_test&quot;
-        req, res = self.client.post(url, data=self.data)
-        self.assertEqual(res.status_code, 200), res.status_code
-        self.assertEqual(res.json, self.expected_result), f&quot;response: {res} \n expected_result: {self.expected_result}&quot;
+    <span class="k">def</span> <span class="nf">setUp</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">data</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;test&quot;</span><span class="p">,</span> <span class="s2">&quot;age&quot;</span><span class="p">:</span> <span class="mi">100</span><span class="p">}</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">client</span> <span class="o">=</span> <span class="n">app</span><span class="o">.</span><span class="n">test_client</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">expected_result</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;params&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">,</span> <span class="s2">&quot;request.ctx.params&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">}</span>
 
-    def test_dantic_method_view_put_test(self):
-        url = &quot;/dantic_test&quot;
-        req, res = self.client.put(url, json=self.data)
-        self.assertEqual(res.status_code, 200), res.status_code
-        self.assertEqual(res.json, self.expected_result), f&quot;response: {res} \n expected_result: {self.expected_result}&quot;
-</code></pre>
+    <span class="k">def</span> <span class="nf">test_dantic_method_view_get_test</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">url</span> <span class="o">=</span> <span class="s1">&#39;/dantic_test&#39;</span>
+        <span class="n">req</span><span class="p">,</span> <span class="n">res</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">client</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">url</span><span class="p">,</span> <span class="n">params</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">assertEqual</span><span class="p">(</span><span class="n">res</span><span class="o">.</span><span class="n">status_code</span><span class="p">,</span> <span class="mi">200</span><span class="p">),</span> <span class="n">res</span><span class="o">.</span><span class="n">status_code</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">assertEqual</span><span class="p">(</span><span class="n">res</span><span class="o">.</span><span class="n">json</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">expected_result</span><span class="p">),</span> <span class="sa">f</span><span class="s2">&quot;response: </span><span class="si">{</span><span class="n">res</span><span class="si">}</span><span class="s2"> </span><span class="se">\n</span><span class="s2"> expected_result: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">expected_result</span><span class="si">}</span><span class="s2">&quot;</span>
+
+    <span class="k">def</span> <span class="nf">test_dantic_method_view_post_test</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">url</span> <span class="o">=</span> <span class="s2">&quot;/dantic_test&quot;</span>
+        <span class="n">req</span><span class="p">,</span> <span class="n">res</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">client</span><span class="o">.</span><span class="n">post</span><span class="p">(</span><span class="n">url</span><span class="p">,</span> <span class="n">data</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">assertEqual</span><span class="p">(</span><span class="n">res</span><span class="o">.</span><span class="n">status_code</span><span class="p">,</span> <span class="mi">200</span><span class="p">),</span> <span class="n">res</span><span class="o">.</span><span class="n">status_code</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">assertEqual</span><span class="p">(</span><span class="n">res</span><span class="o">.</span><span class="n">json</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">expected_result</span><span class="p">),</span> <span class="sa">f</span><span class="s2">&quot;response: </span><span class="si">{</span><span class="n">res</span><span class="si">}</span><span class="s2"> </span><span class="se">\n</span><span class="s2"> expected_result: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">expected_result</span><span class="si">}</span><span class="s2">&quot;</span>
+
+    <span class="k">def</span> <span class="nf">test_dantic_method_view_put_test</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">url</span> <span class="o">=</span> <span class="s2">&quot;/dantic_test&quot;</span>
+        <span class="n">req</span><span class="p">,</span> <span class="n">res</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">client</span><span class="o">.</span><span class="n">put</span><span class="p">(</span><span class="n">url</span><span class="p">,</span> <span class="n">json</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">assertEqual</span><span class="p">(</span><span class="n">res</span><span class="o">.</span><span class="n">status_code</span><span class="p">,</span> <span class="mi">200</span><span class="p">),</span> <span class="n">res</span><span class="o">.</span><span class="n">status_code</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">assertEqual</span><span class="p">(</span><span class="n">res</span><span class="o">.</span><span class="n">json</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">expected_result</span><span class="p">),</span> <span class="sa">f</span><span class="s2">&quot;response: </span><span class="si">{</span><span class="n">res</span><span class="si">}</span><span class="s2"> </span><span class="se">\n</span><span class="s2"> expected_result: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">expected_result</span><span class="si">}</span><span class="s2">&quot;</span>
+</code></pre></div>
+
 <p>DanticView inherits from HTTPMethodView, and it supports all usages in HTTPMethodView, including the usage of sanic-dantic in HTTPMethodView.</p>
                 
               

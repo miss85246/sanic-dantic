@@ -406,33 +406,34 @@
                 <h1 id="function-based-view-usage">Function-Based View Usage</h1>
 <h2 id="overview">Overview</h2>
 <p>In FBV you can directly use the parse_params' method to check parameters:</p>
-<pre><code class="language-python">import unittest
-from sanic import Sanic
-from sanic.response import json
-from sanic_dantic import parse_params, BaseModel
+<div class="codehilite"><pre><span></span><code><span class="kn">import</span> <span class="nn">unittest</span>
+<span class="kn">from</span> <span class="nn">sanic</span> <span class="kn">import</span> <span class="n">Sanic</span>
+<span class="kn">from</span> <span class="nn">sanic.response</span> <span class="kn">import</span> <span class="n">json</span>
+<span class="kn">from</span> <span class="nn">sanic_dantic</span> <span class="kn">import</span> <span class="n">parse_params</span><span class="p">,</span> <span class="n">BaseModel</span>
 
-class Person(BaseModel):
-    name:str
-    age:int
+<span class="k">class</span> <span class="nc">Person</span><span class="p">(</span><span class="n">BaseModel</span><span class="p">):</span>
+    <span class="n">name</span><span class="p">:</span><span class="nb">str</span>
+    <span class="n">age</span><span class="p">:</span><span class="nb">int</span>
 
-app = Sanic(&quot;SanicDanticTest&quot;)
+<span class="n">app</span> <span class="o">=</span> <span class="n">Sanic</span><span class="p">(</span><span class="s2">&quot;SanicDanticTest&quot;</span><span class="p">)</span>
 
-@app.route('/query_test', methods=['GET'])
-@parse_params(query=Person)
-async def query_test(request, params):
-    assert params.name == request.ctx.params
-     # {&quot;params&quot;:{&quot;name&quot;:&quot;test&quot;, &quot;age&quot;: 100}, &quot;ctx.params&quot;:{&quot;name&quot;:&quot;test&quot;, &quot;age&quot;: 100}}
-    return json({&quot;params&quot;:params, &quot;ctx.params&quot;:request.ctx.params})
+<span class="nd">@app</span><span class="o">.</span><span class="n">route</span><span class="p">(</span><span class="s1">&#39;/query_test&#39;</span><span class="p">,</span> <span class="n">methods</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;GET&#39;</span><span class="p">])</span>
+<span class="nd">@parse_params</span><span class="p">(</span><span class="n">query</span><span class="o">=</span><span class="n">Person</span><span class="p">)</span>
+<span class="k">async</span> <span class="k">def</span> <span class="nf">query_test</span><span class="p">(</span><span class="n">request</span><span class="p">,</span> <span class="n">params</span><span class="p">):</span>
+    <span class="k">assert</span> <span class="n">params</span><span class="o">.</span><span class="n">name</span> <span class="o">==</span> <span class="n">request</span><span class="o">.</span><span class="n">ctx</span><span class="o">.</span><span class="n">params</span>
+     <span class="c1"># {&quot;params&quot;:{&quot;name&quot;:&quot;test&quot;, &quot;age&quot;: 100}, &quot;ctx.params&quot;:{&quot;name&quot;:&quot;test&quot;, &quot;age&quot;: 100}}</span>
+    <span class="k">return</span> <span class="n">json</span><span class="p">({</span><span class="s2">&quot;params&quot;</span><span class="p">:</span><span class="n">params</span><span class="p">,</span> <span class="s2">&quot;ctx.params&quot;</span><span class="p">:</span><span class="n">request</span><span class="o">.</span><span class="n">ctx</span><span class="o">.</span><span class="n">params</span><span class="p">})</span>
 
-class SimpleTest(unittest.TestCase):
-    def test_simple_usage(self):
-        data = {&quot;name&quot;:&quot;test&quot;, &quot;age&quot;: 100}
-        req, res = app.test_client.get(&quot;/query_test&quot;, params=data)
-        self.assertEqual(res.json, {&quot;params&quot;:data, &quot;ctx.params&quot;:data})
+<span class="k">class</span> <span class="nc">SimpleTest</span><span class="p">(</span><span class="n">unittest</span><span class="o">.</span><span class="n">TestCase</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">test_simple_usage</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">data</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;name&quot;</span><span class="p">:</span><span class="s2">&quot;test&quot;</span><span class="p">,</span> <span class="s2">&quot;age&quot;</span><span class="p">:</span> <span class="mi">100</span><span class="p">}</span>
+        <span class="n">req</span><span class="p">,</span> <span class="n">res</span> <span class="o">=</span> <span class="n">app</span><span class="o">.</span><span class="n">test_client</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;/query_test&quot;</span><span class="p">,</span> <span class="n">params</span><span class="o">=</span><span class="n">data</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">assertEqual</span><span class="p">(</span><span class="n">res</span><span class="o">.</span><span class="n">json</span><span class="p">,</span> <span class="p">{</span><span class="s2">&quot;params&quot;</span><span class="p">:</span><span class="n">data</span><span class="p">,</span> <span class="s2">&quot;ctx.params&quot;</span><span class="p">:</span><span class="n">data</span><span class="p">})</span>
 
-if __name__ == '__main__':
-    unittest.main()
-</code></pre>
+<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s1">&#39;__main__&#39;</span><span class="p">:</span>
+    <span class="n">unittest</span><span class="o">.</span><span class="n">main</span><span class="p">()</span>
+</code></pre></div>
+
 <h2 id="specify-the-inspection-mode">Specify the inspection mode</h2>
 <p>In sanic-dantic, you can modify it to any inspection mode by specifying different models</p>
 <p><code>path</code>, <code>query</code>, <code>form</code>, <code>body</code> are four different inspection modes</p>
@@ -443,66 +444,67 @@ if __name__ == '__main__':
 <li><code>body</code>: If you appoint it, sanic-dantic will help check body params. It applies to <code>POST</code>, <code>PUT</code>, <code>PATCH</code></li>
 <li><strong>Notice</strong>: the applies is just suggest, It's not mean can't use with other method, you can try it</li>
 </ul>
-<pre><code class="language-python">from sanic import Sanic
-from sanic.response import json
+<div class="codehilite"><pre><span></span><code><span class="kn">from</span> <span class="nn">sanic</span> <span class="kn">import</span> <span class="n">Sanic</span>
+<span class="kn">from</span> <span class="nn">sanic.response</span> <span class="kn">import</span> <span class="n">json</span>
 
-from sanic_dantic import parse_params, BaseModel
-
-
-class Person(BaseModel):
-    name: str
-    age: int
+<span class="kn">from</span> <span class="nn">sanic_dantic</span> <span class="kn">import</span> <span class="n">parse_params</span><span class="p">,</span> <span class="n">BaseModel</span>
 
 
-app = Sanic(&quot;SanicDanticExample&quot;)
+<span class="k">class</span> <span class="nc">Person</span><span class="p">(</span><span class="n">BaseModel</span><span class="p">):</span>
+    <span class="n">name</span><span class="p">:</span> <span class="nb">str</span>
+    <span class="n">age</span><span class="p">:</span> <span class="nb">int</span>
 
 
-@app.route('/path_test/&lt;name&gt;/&lt;age&gt;/', methods=['GET'])
-@parse_params(path=Person)
-async def path_test(request, name, age, params):
-    return json({&quot;params&quot;: params, &quot;request.ctx.params&quot;: request.ctx.params})
+<span class="n">app</span> <span class="o">=</span> <span class="n">Sanic</span><span class="p">(</span><span class="s2">&quot;SanicDanticExample&quot;</span><span class="p">)</span>
 
 
-@app.route('/query_test', methods=['GET'])
-@parse_params(query=Person)
-async def get_test(request, params):
-    return json({&quot;params&quot;: params, &quot;request.ctx.params&quot;: request.ctx.params})
+<span class="nd">@app</span><span class="o">.</span><span class="n">route</span><span class="p">(</span><span class="s1">&#39;/path_test/&lt;name&gt;/&lt;age&gt;/&#39;</span><span class="p">,</span> <span class="n">methods</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;GET&#39;</span><span class="p">])</span>
+<span class="nd">@parse_params</span><span class="p">(</span><span class="n">path</span><span class="o">=</span><span class="n">Person</span><span class="p">)</span>
+<span class="k">async</span> <span class="k">def</span> <span class="nf">path_test</span><span class="p">(</span><span class="n">request</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">age</span><span class="p">,</span> <span class="n">params</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">json</span><span class="p">({</span><span class="s2">&quot;params&quot;</span><span class="p">:</span> <span class="n">params</span><span class="p">,</span> <span class="s2">&quot;request.ctx.params&quot;</span><span class="p">:</span> <span class="n">request</span><span class="o">.</span><span class="n">ctx</span><span class="o">.</span><span class="n">params</span><span class="p">})</span>
 
 
-@app.route('/form_test', methods=['GET', 'POST'])
-@parse_params(form=Person)
-async def path_test(request, params):
-    params.__getattr__(&quot;name&quot;)
-    params.__setattr__(&quot;age&quot;, params.age)
-    return json({&quot;params&quot;: params, &quot;request.ctx.params&quot;: request.ctx.params})
+<span class="nd">@app</span><span class="o">.</span><span class="n">route</span><span class="p">(</span><span class="s1">&#39;/query_test&#39;</span><span class="p">,</span> <span class="n">methods</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;GET&#39;</span><span class="p">])</span>
+<span class="nd">@parse_params</span><span class="p">(</span><span class="n">query</span><span class="o">=</span><span class="n">Person</span><span class="p">)</span>
+<span class="k">async</span> <span class="k">def</span> <span class="nf">get_test</span><span class="p">(</span><span class="n">request</span><span class="p">,</span> <span class="n">params</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">json</span><span class="p">({</span><span class="s2">&quot;params&quot;</span><span class="p">:</span> <span class="n">params</span><span class="p">,</span> <span class="s2">&quot;request.ctx.params&quot;</span><span class="p">:</span> <span class="n">request</span><span class="o">.</span><span class="n">ctx</span><span class="o">.</span><span class="n">params</span><span class="p">})</span>
 
 
-@app.route('/body_test', methods=['POST', 'PUT', 'PATCH'])
-@parse_params(body=Person)
-async def body_test(request, params):
-    return json({&quot;params&quot;: params, &quot;request.ctx.params&quot;: request.ctx.params})
-</code></pre>
+<span class="nd">@app</span><span class="o">.</span><span class="n">route</span><span class="p">(</span><span class="s1">&#39;/form_test&#39;</span><span class="p">,</span> <span class="n">methods</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;GET&#39;</span><span class="p">,</span> <span class="s1">&#39;POST&#39;</span><span class="p">])</span>
+<span class="nd">@parse_params</span><span class="p">(</span><span class="n">form</span><span class="o">=</span><span class="n">Person</span><span class="p">)</span>
+<span class="k">async</span> <span class="k">def</span> <span class="nf">path_test</span><span class="p">(</span><span class="n">request</span><span class="p">,</span> <span class="n">params</span><span class="p">):</span>
+    <span class="n">params</span><span class="o">.</span><span class="fm">__getattr__</span><span class="p">(</span><span class="s2">&quot;name&quot;</span><span class="p">)</span>
+    <span class="n">params</span><span class="o">.</span><span class="fm">__setattr__</span><span class="p">(</span><span class="s2">&quot;age&quot;</span><span class="p">,</span> <span class="n">params</span><span class="o">.</span><span class="n">age</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">json</span><span class="p">({</span><span class="s2">&quot;params&quot;</span><span class="p">:</span> <span class="n">params</span><span class="p">,</span> <span class="s2">&quot;request.ctx.params&quot;</span><span class="p">:</span> <span class="n">request</span><span class="o">.</span><span class="n">ctx</span><span class="o">.</span><span class="n">params</span><span class="p">})</span>
+
+
+<span class="nd">@app</span><span class="o">.</span><span class="n">route</span><span class="p">(</span><span class="s1">&#39;/body_test&#39;</span><span class="p">,</span> <span class="n">methods</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;POST&#39;</span><span class="p">,</span> <span class="s1">&#39;PUT&#39;</span><span class="p">,</span> <span class="s1">&#39;PATCH&#39;</span><span class="p">])</span>
+<span class="nd">@parse_params</span><span class="p">(</span><span class="n">body</span><span class="o">=</span><span class="n">Person</span><span class="p">)</span>
+<span class="k">async</span> <span class="k">def</span> <span class="nf">body_test</span><span class="p">(</span><span class="n">request</span><span class="p">,</span> <span class="n">params</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">json</span><span class="p">({</span><span class="s2">&quot;params&quot;</span><span class="p">:</span> <span class="n">params</span><span class="p">,</span> <span class="s2">&quot;request.ctx.params&quot;</span><span class="p">:</span> <span class="n">request</span><span class="o">.</span><span class="n">ctx</span><span class="o">.</span><span class="n">params</span><span class="p">})</span>
+</code></pre></div>
+
 <h2 id="use-multiple-checks-at-the-same-time">Use multiple checks at the same time</h2>
 <p>sanic-dantic support use multiple checks at the same time. you can use it like this:</p>
-<pre><code class="language-python">from sanic import Sanic
-from sanic.response import json
+<div class="codehilite"><pre><span></span><code><span class="kn">from</span> <span class="nn">sanic</span> <span class="kn">import</span> <span class="n">Sanic</span>
+<span class="kn">from</span> <span class="nn">sanic.response</span> <span class="kn">import</span> <span class="n">json</span>
 
-from sanic_dantic import parse_params, BaseModel
-
-
-class Person(BaseModel):
-    name: str
-    age: int
+<span class="kn">from</span> <span class="nn">sanic_dantic</span> <span class="kn">import</span> <span class="n">parse_params</span><span class="p">,</span> <span class="n">BaseModel</span>
 
 
-app = Sanic(&quot;SanicDanticExample&quot;)
+<span class="k">class</span> <span class="nc">Person</span><span class="p">(</span><span class="n">BaseModel</span><span class="p">):</span>
+    <span class="n">name</span><span class="p">:</span> <span class="nb">str</span>
+    <span class="n">age</span><span class="p">:</span> <span class="nb">int</span>
 
 
-@app.route('/path_test/&lt;name&gt;/&lt;age&gt;/', methods=['GET'])
-@parse_params(path=Person, body=Person, query=Person)
-async def get_test(request, name, age, params):
-    return json({&quot;params&quot;: params, &quot;request.ctx.params&quot;: request.ctx.params})
-</code></pre>
+<span class="n">app</span> <span class="o">=</span> <span class="n">Sanic</span><span class="p">(</span><span class="s2">&quot;SanicDanticExample&quot;</span><span class="p">)</span>
+
+
+<span class="nd">@app</span><span class="o">.</span><span class="n">route</span><span class="p">(</span><span class="s1">&#39;/path_test/&lt;name&gt;/&lt;age&gt;/&#39;</span><span class="p">,</span> <span class="n">methods</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;GET&#39;</span><span class="p">])</span>
+<span class="nd">@parse_params</span><span class="p">(</span><span class="n">path</span><span class="o">=</span><span class="n">Person</span><span class="p">,</span> <span class="n">body</span><span class="o">=</span><span class="n">Person</span><span class="p">,</span> <span class="n">query</span><span class="o">=</span><span class="n">Person</span><span class="p">)</span>
+<span class="k">async</span> <span class="k">def</span> <span class="nf">get_test</span><span class="p">(</span><span class="n">request</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">age</span><span class="p">,</span> <span class="n">params</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">json</span><span class="p">({</span><span class="s2">&quot;params&quot;</span><span class="p">:</span> <span class="n">params</span><span class="p">,</span> <span class="s2">&quot;request.ctx.params&quot;</span><span class="p">:</span> <span class="n">request</span><span class="o">.</span><span class="n">ctx</span><span class="o">.</span><span class="n">params</span><span class="p">})</span>
+</code></pre></div>
                 
               
               

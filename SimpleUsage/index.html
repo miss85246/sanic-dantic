@@ -335,33 +335,32 @@
 <p>You can get parameters quickly through <code>sanic-dantic</code>.</p>
 <p>You just need give it a Pydantic Model and It's will auto help you check parameters and serialization.</p>
 <p>Passed checked parameters will simultaneously transmitted to <code>request.ctx.params</code> and <code>params</code>.</p>
-<pre><code class="language-python">import unittest
-from sanic import Sanic
-from sanic.response import json
-from sanic_dantic import parse_params, BaseModel
+<div class="codehilite"><pre><span></span><code><span class="kn">import</span> <span class="nn">unittest</span>
+<span class="kn">from</span> <span class="nn">sanic</span> <span class="kn">import</span> <span class="n">Sanic</span>
+<span class="kn">from</span> <span class="nn">sanic.response</span> <span class="kn">import</span> <span class="n">json</span>
+<span class="kn">from</span> <span class="nn">sanic_dantic</span> <span class="kn">import</span> <span class="n">parse_params</span><span class="p">,</span> <span class="n">BaseModel</span>
 
-class Person(BaseModel):
-    name:str
-    age:int
+<span class="k">class</span> <span class="nc">Person</span><span class="p">(</span><span class="n">BaseModel</span><span class="p">):</span>
+    <span class="n">name</span><span class="p">:</span><span class="nb">str</span>
+    <span class="n">age</span><span class="p">:</span><span class="nb">int</span>
 
-app = Sanic(&quot;SanicDanticTest&quot;)
+<span class="n">app</span> <span class="o">=</span> <span class="n">Sanic</span><span class="p">(</span><span class="s2">&quot;SanicDanticTest&quot;</span><span class="p">)</span>
 
-@app.route('/query_test', methods=['GET'])
-@parse_params(query=Person)
-async def query_test(request, params):
-     # {&quot;params&quot;:{&quot;name&quot;:&quot;test&quot;, &quot;age&quot;: 100}, &quot;ctx.params&quot;:{&quot;name&quot;:&quot;test&quot;, &quot;age&quot;: 100}}
-    return json({&quot;params&quot;:params, &quot;ctx.params&quot;:request.ctx.params})
+<span class="nd">@app</span><span class="o">.</span><span class="n">route</span><span class="p">(</span><span class="s1">&#39;/query_test&#39;</span><span class="p">,</span> <span class="n">methods</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;GET&#39;</span><span class="p">])</span>
+<span class="nd">@parse_params</span><span class="p">(</span><span class="n">query</span><span class="o">=</span><span class="n">Person</span><span class="p">)</span>
+<span class="k">async</span> <span class="k">def</span> <span class="nf">query_test</span><span class="p">(</span><span class="n">request</span><span class="p">,</span> <span class="n">params</span><span class="p">):</span>
+     <span class="c1"># {&quot;params&quot;:{&quot;name&quot;:&quot;test&quot;, &quot;age&quot;: 100}, &quot;ctx.params&quot;:{&quot;name&quot;:&quot;test&quot;, &quot;age&quot;: 100}}</span>
+    <span class="k">return</span> <span class="n">json</span><span class="p">({</span><span class="s2">&quot;params&quot;</span><span class="p">:</span><span class="n">params</span><span class="p">,</span> <span class="s2">&quot;ctx.params&quot;</span><span class="p">:</span><span class="n">request</span><span class="o">.</span><span class="n">ctx</span><span class="o">.</span><span class="n">params</span><span class="p">})</span>
 
-class SimpleTest(unittest.TestCase):
-    def test_simple_usage(self):
-        data = {&quot;name&quot;:&quot;test&quot;, &quot;age&quot;: 100}
-        req, res = app.test_client.get(&quot;/query_test&quot;, params=data)
-        self.assertEqual(res.json, {&quot;params&quot;:data, &quot;ctx.params&quot;:data})
+<span class="k">class</span> <span class="nc">SimpleTest</span><span class="p">(</span><span class="n">unittest</span><span class="o">.</span><span class="n">TestCase</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">test_simple_usage</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">data</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;name&quot;</span><span class="p">:</span><span class="s2">&quot;test&quot;</span><span class="p">,</span> <span class="s2">&quot;age&quot;</span><span class="p">:</span> <span class="mi">100</span><span class="p">}</span>
+        <span class="n">req</span><span class="p">,</span> <span class="n">res</span> <span class="o">=</span> <span class="n">app</span><span class="o">.</span><span class="n">test_client</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;/query_test&quot;</span><span class="p">,</span> <span class="n">params</span><span class="o">=</span><span class="n">data</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">assertEqual</span><span class="p">(</span><span class="n">res</span><span class="o">.</span><span class="n">json</span><span class="p">,</span> <span class="p">{</span><span class="s2">&quot;params&quot;</span><span class="p">:</span><span class="n">data</span><span class="p">,</span> <span class="s2">&quot;ctx.params&quot;</span><span class="p">:</span><span class="n">data</span><span class="p">})</span>
 
-if __name__ == '__main__':
-    unittest.main()
-
-</code></pre>
+<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s1">&#39;__main__&#39;</span><span class="p">:</span>
+    <span class="n">unittest</span><span class="o">.</span><span class="n">main</span><span class="p">()</span>
+</code></pre></div>
                 
               
               
