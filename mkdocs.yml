@@ -6,6 +6,18 @@ theme:
     primary: teal
     accent: light blue
 
+nav:
+  - Overview: index.md
+  - Installation: Installation.md
+  - Usage:
+      - SimpleUsage: SimpleUsage.md
+      - FunctionBasedViewUsage: FunctionBasedViewUsage.md
+      - ClassBasedViewUsage: ClassBasedViewUsage.md
+  - Attention: Attention.md
+  - Pydantic: Pydantic.md
+  - Thanks: Thanks.md
+  - License: License.md
+
 extra:
   social:
     - icon: fontawesome/brands/github
