@@ -3,7 +3,7 @@ site_name: sanic-dantic
 theme:
   name: 'material'
   palette:
-    primary: pink
+    primary: deep orange
     accent: deep orange
 
 nav:
