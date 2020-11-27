@@ -11,10 +11,10 @@ install:
   - pip install mkdocs
   - pip install mkdocs-material
 script:
-  - pip uninstall uloop
   - python setup.py check
   - python setup.py build
   - python setup.py install
+  - pip uninstall uloop
   - python test/test.py
   - coverage run test/test.py
 deploy:
