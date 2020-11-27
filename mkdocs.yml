@@ -5,6 +5,10 @@ theme:
   palette:
     primary: teal
     accent: light blue
+  highlightjs: true
+  hljs_languages:
+    - shell
+    - python
 
 nav:
   - Overview: index.md
