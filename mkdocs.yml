@@ -7,7 +7,7 @@ theme:
     accent: deep orange
 
 nav:
-  - Overview: Index.md
+  - Overview: index.md
   - Installation: Installation.md
   - Usage:
       - SimpleUsage: SimpleUsage.md
