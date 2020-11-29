@@ -7,7 +7,7 @@ from .sanic_function_dantic import parse_params
 __author__ = "Connor Zhang"
 __copyright__ = "Copyright 2020, Connor Zhang"
 __license__ = "MIT"
-__version__ = "1.1.4"
+__version__ = "1.1.5"
 __all__ = [
     # dataclasses
     'dataclasses',
