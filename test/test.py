@@ -93,11 +93,11 @@ class DanticTestView(DanticView):
     async def put(self, request, params):
         return json({"params": params, "request.ctx.params": request.ctx.params})
 
-    async def patch(self, request, params):
-        return json({"params": params, "request.ctx.params": request.ctx.params})
-
-    async def patch_model(self):
-        return self.DanticModel(body=Person)
+    # async def patch(self, request, params):
+    #     return json({"params": params, "request.ctx.params": request.ctx.params})
+    #
+    # async def patch_model(self):
+    #     return self.DanticModel(body=Person)
 
     def get_model(self):
         return self.DanticModel(query=Person)
@@ -182,17 +182,17 @@ class TestSanicDantic(unittest.TestCase):
         self.assertEqual(res.status_code, 200), res.status_code
         self.assertEqual(res.json, self.expected_result), f"response: {res} \n expected_result: {self.expected_result}"
 
-    def test_dtv_patch_test(self):
-        url = '/dtv_test/'
-        req, res = self.client.patch(url, json=self.data, params=self.data)
-        self.assertEqual(res.status_code, 200), res.status_code
-        self.assertEqual(res.json, self.expected_result), f"response: {res} \n expected_result: {self.expected_result}"
+    # def test_dtv_patch_test(self):
+    #     url = '/dtv_test/'
+    #     req, res = self.client.patch(url, json=self.data, params=self.data)
+    #     self.assertEqual(res.status_code, 200), res.status_code
+    #     self.assertEqual(res.json, self.expected_result), f"response: {res} \n expected_result: {self.expected_result}"
 
     # -------------------------------------------------- -- error test -- ----------------------------------------------
 
     def test_dtv_invalid_usage(self):
         url = '/dtv_test/'
-        req, res = self.client.patch(url, json=self.data)
+        req, res = self.client.get(url, params={"name": "test"})
         self.assertEqual(res.status_code, 400), res.status_code
 
     def test_body_and_form(self):
