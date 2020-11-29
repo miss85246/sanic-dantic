@@ -1,7 +1,9 @@
 # -*- coding: utf-8 -*-
 from inspect import getmro
 
-from pydantic import BaseModel
+from pydantic import BaseModel, ValidationError
+from sanic.exceptions import InvalidUsage, ServerError
+from sanic.log import logger
 
 
 class ParsedArgsObj(dict):
@@ -22,13 +24,17 @@ class DanticModelObj:
         :param body: pydantic.BaseModel
         """
         items = {'path': path, 'query': query, 'form': form, 'body': body}
-        if body and form:
-            raise InvalidOperation("sanic-dantic: body model cannot exist at the same time as form model")
-        for item, model in items.items():
-            if model is not None and BaseModel not in [_ for _ in getmro(model)]:
-                raise TypeError("param must type of pydantic.BaseModel")
-            self.__setattr__(item, model)
-        self.items = items
+        try:
+            if body and form:
+                raise InvalidOperation("sanic-dantic: body model cannot exist at the same time as form model")
+            for item, model in items.items():
+                if model is not None and BaseModel not in [_ for _ in getmro(model)]:
+                    raise InvalidOperation("param must type of pydantic.BaseModel")
+                self.__setattr__(item, model)
+            self.items = items
+        except InvalidOperation as e:
+            logger.error(e)
+            raise ServerError(e)
 
     def __repr__(self):
         return str(self.items)
@@ -50,21 +56,29 @@ def validate(request, path=None, query=None, form=None, body=None):
     :return parsed_args: ParsedArgsObj
     """
     parsed_args = ParsedArgsObj()
-    if body and request.method not in ["POST", "PUT", "PATCH"]:
-        raise InvalidOperation("sanic-dantic: body model must be used together with one of ['POST','PUT','PATCH']")
+    try:
+        if body and request.method not in ["POST", "PUT", "PATCH"]:
+            raise InvalidOperation("sanic-dantic: body model must be used together with one of ['POST','PUT','PATCH']")
+        if path:
+            parsed_args.update(path(**request.match_info).dict())
 
-    if path:
-        parsed_args.update(path(**request.match_info).dict())
+        if query:
+            params = {k: v[0] for k, v in request.args.items()}
+            parsed_args.update(query(**params).dict())
 
-    if query:
-        params = {k: v[0] for k, v in request.args.items()}
-        parsed_args.update(query(**params).dict())
+        if form:
+            forms = {k: v[0] for k, v in request.form.items()}
+            parsed_args.update(form(**forms).dict())
 
-    if form:
-        forms = {k: v[0] for k, v in request.form.items()}
-        parsed_args.update(form(**forms).dict())
-
-    if body:
-        parsed_args.update(body(**request.json).dict())
+        if body:
+            parsed_args.update(body(**request.json).dict())
+    except ValidationError as e:
+        error_messages = e.errors()[0]
+        message = f'{error_messages.get("loc")[0]} {error_messages.get("msg")}'
+        logger.error(message)
+        raise InvalidUsage(message)
+    except InvalidOperation as e:
+        logger.error(e)
+        raise ServerError(e)
 
     return parsed_args

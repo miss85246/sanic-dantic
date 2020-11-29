@@ -1,6 +1,7 @@
 import unittest
 
 from sanic import Sanic
+from sanic.exceptions import ServerError
 from sanic.response import json
 from sanic.views import HTTPMethodView
 
@@ -213,9 +214,9 @@ class TestSanicDantic(unittest.TestCase):
     def test_type_error(self):
         try:
             DanticModelObj(query=Person, form=Car)
-        except TypeError as e:
+        except ServerError as e:
             print(DanticModelObj(query=Person))
-            self.assertEqual(type(e), TypeError)
+            self.assertEqual(type(e), ServerError)
 
 
 if __name__ == '__main__':
