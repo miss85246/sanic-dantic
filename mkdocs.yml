@@ -2,28 +2,34 @@ site_name: sanic-dantic
 
 theme:
   name: 'material'
+  icon:
+    logo: material/api
+  font:
+    code: Roboto Mono
+  language: en
   palette:
-    primary: deep orange
-    accent: deep orange
+    scheme: default
+    primary: indigo
+    accent: light blue
+  features:
+    - toc.integrate
 
 nav:
   - Overview: index.md
-  - Installation: Installation.md
+  - Installation: 02_Installation.md
   - Usage:
-      - SimpleUsage: SimpleUsage.md
-      - FunctionBasedViewUsage: FunctionBasedViewUsage.md
-      - ClassBasedViewUsage: ClassBasedViewUsage.md
-  - Attention: Attention.md
-  - Pydantic: Pydantic.md
-  - Thanks: Thanks.md
-  - License: License.md
+      - SimpleUsage: 03_SimpleUsage.md
+      - FunctionBasedViewUsage: 04_FunctionBasedViewUsage.md
+      - ClassBasedViewUsage: 05_ClassBasedViewUsage.md
+  - Attention: 06_Attention.md
+  - API Reference: 07_APIReference.md
+  - Todo List: 08_TodoList.md
+  - Thanks: 09_Thanks.md
+  - License: 10_License.md
 
 markdown_extensions:
   - markdown.extensions.codehilite:
       guess_lang: true
-extra:
-  social:
-    - icon: fontawesome/brands/github
-      link: https://github.com/miss85246/sanic-dantic
-
+repo_url: https://github.com/miss85246/sanic-dantic/
+repo_name: sanic-dantic
 copyright: Copyright &copy; 2020 Connor Zhang
