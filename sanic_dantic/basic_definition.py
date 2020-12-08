@@ -63,7 +63,7 @@ def validate(request, path=None, query=None, form=None, body=None):
             parsed_args.update(path(**request.match_info).dict())
 
         if query:
-            params = {k: v[0] for k, v in request.args.items()}
+            params = {k: v[0] if len(v) == 1 else v for k, v in request.args.items()}
             parsed_args.update(query(**params).dict())
 
         if form:
