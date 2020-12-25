@@ -46,4 +46,4 @@ jobs:
           # User defined upload name. Visible in Codecov UI
         name: sanic-dantic
           # Repository upload token - get it from codecov.io. Required only for private repositories
-       #token: # optional
+        token: 4296f81e-c47a-4427-b383-26eaed93c1c7
