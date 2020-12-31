@@ -15,24 +15,21 @@ class ParsedArgsObj(dict):
 
 
 class DanticModelObj:
-    def __init__(self, path=None, query=None, form=None, body=None):
+    def __init__(self, header=None, path=None, query=None, form=None, body=None):
         """
         The param must be a BaseModel class or must inherit from BaseModel \n
         :param path: pydantic.BaseModel
         :param query: pydantic.BaseModel
         :param form: pydantic.BaseModel
         :param body: pydantic.BaseModel
+        if list, the same model name's model will use strict mode
         """
-        items = {'path': path, 'query': query, 'form': form, 'body': body}
         try:
-            if body and form:
-                raise InvalidOperation("sanic-dantic: body model cannot exist at the same time as form model")
-            for item, model in items.items():
-                if model is not None and BaseModel not in [_ for _ in getmro(model)]:
-                    raise InvalidOperation("param must type of pydantic.BaseModel")
-                self.__setattr__(item, model)
-            self.items = items
-        except InvalidOperation as e:
+            assert not (body and form), "sanic-dantic: body model cannot exist at the same time as form model"
+            self.items = {"header": header, "path": path, "query": query, "form": form, "body": body}
+            basemodel_check = [BaseModel in [_ for _ in getmro(model)] for model in self.items.values() if model]
+            assert False not in basemodel_check, "sanic-dantic: model must inherited from Pydantic.BaseModel"
+        except AssertionError as e:
             logger.error(e)
             raise ServerError(e)
 
@@ -40,14 +37,11 @@ class DanticModelObj:
         return str(self.items)
 
 
-class InvalidOperation(BaseException):
-    pass
-
-
-def validate(request, path=None, query=None, form=None, body=None):
+def validate(request, header=None, path=None, query=None, form=None, body=None):
     """
     When there are the same parameter name in the model, the parameter in ParsedArgsObj will be overwritten,
     The priorities is: body = form > query > path \n
+    :param header: Pydantic model
     :param request: Pydantic model
     :param query: Pydantic model
     :param body: Pydantic model, cannot exist at the same time as form
@@ -55,30 +49,22 @@ def validate(request, path=None, query=None, form=None, body=None):
     :param form: Pydantic model, cannot exist at the same time as body
     :return parsed_args: ParsedArgsObj
     """
-    parsed_args = ParsedArgsObj()
     try:
-        if body and request.method not in ["POST", "PUT", "PATCH"]:
-            raise InvalidOperation("sanic-dantic: body model must be used together with one of ['POST','PUT','PATCH']")
-        if path:
-            parsed_args.update(path(**request.match_info).dict())
-
-        if query:
-            params = {k: v[0] if len(v) == 1 else v for k, v in request.args.items()}
-            parsed_args.update(query(**params).dict())
-
-        if form:
-            forms = {k: v[0] for k, v in request.form.items()}
-            parsed_args.update(form(**forms).dict())
-
-        if body:
-            parsed_args.update(body(**request.json).dict())
+        error_message = "sanic-dantic: body model must be used together with one of ['POST','PUT','PATCH','DELETE']"
+        assert request.method in ["POST", "PUT", "PATCH", "DELETE"] if body else True, error_message
+        models, parsed_args = [header, path, query] + [form or body], ParsedArgsObj()
+        body_storage = {k: v[0] if len(v) == 1 else v for k, v in request.form.items()} if form else request.json
+        params = {k: v[0] if len(v) == 1 else v for k, v in request.args.items()}
+        storages = [request.headers, request.match_info, params, body_storage]
+        models = [item for item in zip(models, storages) if item[0]]
+        [parsed_args.update(model(**storage).dict()) for model, storage in models]
     except ValidationError as e:
         error_messages = e.errors()[0]
         message = f'{error_messages.get("loc")[0]} {error_messages.get("msg")}'
         logger.error(message)
         raise InvalidUsage(message)
-    except InvalidOperation as e:
+    except AssertionError as e:
         logger.error(e)
         raise ServerError(e)
-
+    
     return parsed_args
