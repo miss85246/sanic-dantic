@@ -7,8 +7,11 @@ from .sanic_function_dantic import parse_params
 __author__ = "Connor Zhang"
 __copyright__ = "Copyright 2020, Connor Zhang"
 __license__ = "MIT"
-__version__ = "1.1.7"
+__version__ = "1.1.8"
 __all__ = [
+    # annotated types utils
+    'create_model_from_namedtuple',
+    'create_model_from_typeddict',
     # dataclasses
     'dataclasses',
     # class_validators
@@ -23,7 +26,6 @@ __all__ = [
     # fields
     'Field',
     'Required',
-    'Schema',
     # main
     'BaseConfig',
     'BaseModel',
@@ -49,6 +51,7 @@ __all__ = [
     # tools
     'parse_file_as',
     'parse_obj_as',
+    'parse_raw_as',
     # types
     'NoneStr',
     'NoneBytes',
@@ -68,10 +71,14 @@ __all__ = [
     'conint',
     'PositiveInt',
     'NegativeInt',
+    'NonNegativeInt',
+    'NonPositiveInt',
     'ConstrainedFloat',
     'confloat',
     'PositiveFloat',
     'NegativeFloat',
+    'NonNegativeFloat',
+    'NonPositiveFloat',
     'ConstrainedDecimal',
     'condecimal',
     'UUID1',
@@ -85,9 +92,11 @@ __all__ = [
     'SecretStr',
     'SecretBytes',
     'StrictBool',
+    'StrictBytes',
     'StrictInt',
     'StrictFloat',
     'PaymentCardNumber',
+    'PrivateAttr',
     'ByteSize',
     # sanic-dantic
     'parse_params',

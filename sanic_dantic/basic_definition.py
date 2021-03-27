@@ -4,6 +4,7 @@ from inspect import getmro
 from pydantic import BaseModel, ValidationError
 from sanic.exceptions import InvalidUsage, ServerError
 from sanic.log import logger
+from sanic.request import Request
 
 
 class ParsedArgsObj(dict):
@@ -25,10 +26,11 @@ class DanticModelObj:
         if list, the same model name's model will use strict mode
         """
         try:
-            assert not (body and form), "sanic-dantic: body model cannot exist at the same time as form model"
+            assert not (body and form), "sanic-dantic: body and form cannot be used at the same time."
             self.items = {"header": header, "path": path, "query": query, "form": form, "body": body}
-            basemodel_check = [BaseModel in [_ for _ in getmro(model)] for model in self.items.values() if model]
-            assert False not in basemodel_check, "sanic-dantic: model must inherited from Pydantic.BaseModel"
+            for model in [header, path, query, form, body]:
+                if model and BaseModel not in getmro(model):
+                    raise AssertionError("sanic-dantic: model must inherited from Pydantic.BaseModel")
         except AssertionError as e:
             logger.error(e)
             raise ServerError(e)
@@ -37,34 +39,48 @@ class DanticModelObj:
         return str(self.items)
 
 
-def validate(request, header=None, path=None, query=None, form=None, body=None):
+def validate(request: Request, header=None, path=None, query=None, form=None, body=None, error=None):
     """
     When there are the same parameter name in the model, the parameter in ParsedArgsObj will be overwritten,
-    The priorities is: body = form > query > path \n
+    The priorities is: body = form > query > path > header \n
+    :param request: Request Obj
     :param header: Pydantic model
-    :param request: Pydantic model
-    :param query: Pydantic model
-    :param body: Pydantic model, cannot exist at the same time as form
     :param path: Pydantic model
+    :param query: Pydantic model
     :param form: Pydantic model, cannot exist at the same time as body
+    :param body: Pydantic model, cannot exist at the same time as form
+    :param error: custom error handler function, validate will pass the ValidationError to the function
+
+
     :return parsed_args: ParsedArgsObj
     """
     try:
-        error_message = "sanic-dantic: body model must be used together with one of ['POST','PUT','PATCH','DELETE']"
-        assert request.method in ["POST", "PUT", "PATCH", "DELETE"] if body else True, error_message
-        models, parsed_args = [header, path, query] + [form or body], ParsedArgsObj()
-        body_storage = {k: v[0] if len(v) == 1 else v for k, v in request.form.items()} if form else request.json
-        params = {k: v[0] if len(v) == 1 else v for k, v in request.args.items()}
-        storages = [request.headers, request.match_info, params, body_storage]
-        models = [item for item in zip(models, storages) if item[0]]
-        [parsed_args.update(model(**storage).dict()) for model, storage in models]
+        parsed_args = ParsedArgsObj()
+        if header:
+            parsed_args.update(header(**request.headers).dict())
+
+        if path:
+            parsed_args.update(path(**request.match_info).dict())
+
+        if query:
+            params = {key: val[0] if len(val) == 1 else val for key, val in request.args.items()}
+            parsed_args.update(query(**params).dict())
+
+        if form:
+            form_data = {key: val[0] if len(val) == 1 else val for key, val in request.form.items()}
+            parsed_args.update(form(**form_data).dict())
+
+        elif body:
+            parsed_args.update(body(**request.json).dict())
+
     except ValidationError as e:
-        error_messages = e.errors()[0]
-        message = f'{error_messages.get("loc")[0]} {error_messages.get("msg")}'
-        logger.error(message)
-        raise InvalidUsage(message)
-    except AssertionError as e:
-        logger.error(e)
-        raise ServerError(e)
-    
+        # Priority: error handler function of sanic_dantic  >  default InvalidUsage
+        if error:
+            raise error(request, e)
+        else:
+            error_messages = e.errors()[0]
+            message = f'{error_messages.get("loc")[0]} {error_messages.get("msg")}'
+            logger.error(message)
+            raise InvalidUsage(message)
+
     return parsed_args
