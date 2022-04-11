@@ -1,13 +1,9 @@
 # -*- coding: utf-8 -*-
 # import asyncio
 
-# import nest_asyncio
 from sanic.views import HTTPMethodView
 
 from .basic_definition import DanticModelObj, validate
-
-
-# nest_asyncio.apply()
 
 
 class DanticView(HTTPMethodView):
@@ -43,20 +39,16 @@ class DanticView(HTTPMethodView):
     """
 
     DanticModel = DanticModelObj
+    ctx = None
 
     def dispatch_request(self, request, *args, **kwargs):
         method = request.method.lower()
         handler = getattr(self, method, None)
         model_handler = getattr(self, f'{method}_model', None)
         if model_handler:
-            # todo: support async function in dispatch_request
-            # if asyncio.iscoroutinefunction(model_handler):
-            #     loop = asyncio.get_event_loop()
-            #     model_obj = loop.run_until_complete(model_handler())
-            # else:
-            #     model_obj = model_handler()
             model_obj = model_handler()
             parsed_args = validate(request, **model_obj.items)
             kwargs.update({"params": parsed_args})
             request.ctx.params = parsed_args
+            self.ctx = request.ctx
         return handler(request, *args, **kwargs)

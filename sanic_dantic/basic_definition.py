@@ -23,7 +23,7 @@ class DanticModelObj:
         :param query: pydantic.BaseModel
         :param form: pydantic.BaseModel
         :param body: pydantic.BaseModel
-        if list, the same model name's model will use strict mode
+        if listed, the same model name's model will use strict mode
         """
         try:
             assert not (body and form), "sanic-dantic: body and form cannot be used at the same time."
@@ -50,8 +50,6 @@ def validate(request: Request, header=None, path=None, query=None, form=None, bo
     :param form: Pydantic model, cannot exist at the same time as body
     :param body: Pydantic model, cannot exist at the same time as form
     :param error: custom error handler function, validate will pass the ValidationError to the function
-
-
     :return parsed_args: ParsedArgsObj
     """
     try:
@@ -82,5 +80,7 @@ def validate(request: Request, header=None, path=None, query=None, form=None, bo
             message = f'{error_messages.get("loc")[0]} {error_messages.get("msg")}'
             logger.error(message)
             raise InvalidUsage(message)
+    except Exception as e:
+        raise e
 
     return parsed_args

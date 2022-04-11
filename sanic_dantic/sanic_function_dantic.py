@@ -14,10 +14,9 @@ def parse_params(methods: [str] = None, header=None, path=None, query=None, form
 
     - you can use it directly without **methods** param
 
-    It's also can used in Class-based view:
+    It's also can be used in Class-based view:
 
-    - **methods** parameter is not required. it will be applicable to all view checks if don't give
-
+    - **methods** parameter is not required. it will be applicable to all view checks if you don't give
     :param methods: List Type, which is used to specify the method, and decorate all method if it is not given
     :param header: pydantic.BaseModel
     :param path: pydantic.BaseModel

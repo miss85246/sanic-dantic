@@ -5,7 +5,7 @@ with open("README.md", "r") as fh:
 
 setuptools.setup(
     name="sanic-dantic",
-    version="1.1.8",
+    version="1.1.9",
     author="Connor Zhang",
     author_email="chzhangyue@outlook.com",
     description="A request parameter checking and parsing library based on pydantic under the sanic framework",
@@ -24,5 +24,5 @@ setuptools.setup(
         "Operating System :: OS Independent",
         "License :: OSI Approved :: MIT License",
     ],
-    python_requires='>=3.6.8',
+    python_requires='>=3.7',
 )
