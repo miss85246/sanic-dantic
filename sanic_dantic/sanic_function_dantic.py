@@ -29,8 +29,8 @@ def parse_params(methods: [str] = None, header: Type[BaseModel] = None, path: Ty
         async def decorated_function(request, *args, **kwargs):
             _request = [item for item in (request,) + args if isinstance(item, Request)][0]
             if (methods and _request.method.upper() in [_.upper() for _ in methods]) or not methods:
-                model_obj = DanticModelObj(header=header, path=path, query=query, form=form, body=body)
-                validate(_request, **model_obj.items, error=error)
+                model_obj = DanticModelObj(header=header, path=path, query=query, form=form, body=body, error=error)
+                validate(_request, **model_obj.items)
             response = await f(request, *args, **kwargs)
             return response
 
