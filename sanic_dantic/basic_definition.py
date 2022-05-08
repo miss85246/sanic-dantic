@@ -1,9 +1,10 @@
 # -*- coding: utf-8 -*-
 from inspect import getmro
+from typing import Type
 
 from pydantic import BaseModel, ValidationError
-from sanic.exceptions import InvalidUsage, ServerError
-from sanic.log import logger
+from sanic.exceptions import InvalidUsage, ServerError, SanicException
+from sanic.log import error_logger
 from sanic.request import Request
 
 
@@ -16,42 +17,46 @@ class ParsedArgsObj(dict):
 
 
 class DanticModelObj:
-    def __init__(self, header=None, path=None, query=None, form=None, body=None):
+    def __init__(self, header: Type[BaseModel] = None, query: Type[BaseModel] = None,
+                 path: Type[BaseModel] = None, body: Type[BaseModel] = None,
+                 form: Type[BaseModel] = None, error: Type[SanicException] = None,
+                 ) -> None:
         """
         The param must be a BaseModel class or must inherit from BaseModel \n
-        :param path: pydantic.BaseModel
-        :param query: pydantic.BaseModel
-        :param form: pydantic.BaseModel
-        :param body: pydantic.BaseModel
         if listed, the same model name's model will use strict mode
         """
         try:
             assert not (body and form), "sanic-dantic: body and form cannot be used at the same time."
-            self.items = {"header": header, "path": path, "query": query, "form": form, "body": body}
+            self.items = {
+                "header": header,
+                "path": path,
+                "query": query,
+                "form": form,
+                "body": body,
+                "error": error
+            }
             for model in [header, path, query, form, body]:
                 if model and BaseModel not in getmro(model):
                     raise AssertionError("sanic-dantic: model must inherited from Pydantic.BaseModel")
+            if error and SanicException not in getmro(error):
+                raise AssertionError("sanic-dantic: error must inherited from SanicException")
         except AssertionError as e:
-            logger.error(e)
-            raise ServerError(e)
+            error_logger.error(e)
+            raise ServerError(str(e))
 
     def __repr__(self):
         return str(self.items)
 
 
-def validate(request: Request, header=None, path=None, query=None, form=None, body=None, error=None):
+def validate(request: Request, header: Type[BaseModel] = None, query: Type[BaseModel] = None,
+             path: Type[BaseModel] = None, body: Type[BaseModel] = None,
+             form: Type[BaseModel] = None, error: Type[SanicException] = None
+             ) -> ParsedArgsObj:
     """
     When there are the same parameter name in the model, the parameter in ParsedArgsObj will be overwritten,
-    The priorities is: body = form > query > path > header \n
-    :param request: Request Obj
-    :param header: Pydantic model
-    :param path: Pydantic model
-    :param query: Pydantic model
-    :param form: Pydantic model, cannot exist at the same time as body
-    :param body: Pydantic model, cannot exist at the same time as form
-    :param error: custom error handler function, validate will pass the ValidationError to the function
-    :return parsed_args: ParsedArgsObj
+    The priorities is: body = form > query > path > header
     """
+
     try:
         parsed_args = ParsedArgsObj()
         if header:
@@ -74,13 +79,15 @@ def validate(request: Request, header=None, path=None, query=None, form=None, bo
     except ValidationError as e:
         # Priority: error handler function of sanic_dantic  >  default InvalidUsage
         if error:
-            raise error(request, e)
+            error_messages = e.errors()[0]
+            message = f'{error_messages.get("loc")[0]} {error_messages.get("msg")}'
+            raise error(message)
         else:
             error_messages = e.errors()[0]
             message = f'{error_messages.get("loc")[0]} {error_messages.get("msg")}'
-            logger.error(message)
+            error_logger.error(message)
             raise InvalidUsage(message)
     except Exception as e:
         raise e
-
+    request.ctx.params = parsed_args
     return parsed_args
