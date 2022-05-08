@@ -7,7 +7,7 @@ from .sanic_function_dantic import parse_params
 __author__ = "Connor Zhang"
 __copyright__ = "Copyright 2020, Connor Zhang"
 __license__ = "MIT"
-__version__ = "1.1.8"
+__version__ = "1.2.0"
 __all__ = [
     # annotated types utils
     'create_model_from_namedtuple',
