@@ -69,4 +69,6 @@ class DanticPathPersonView(DanticView):
 
 app.add_route(HttpPersonView.as_view(), "/person")
 app.add_route(DanticPersonView.as_view(), "/dantic_person")
-app.add_route(DanticPathPersonView.as_view(), "/dantic_path_person/<name>/<age>")
+app.add_route(
+    DanticPathPersonView.as_view(), "/dantic_path_person/<name>/<age>"
+)

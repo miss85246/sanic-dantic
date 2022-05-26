@@ -37,7 +37,10 @@ class FbvTest(TestCase):
 
     def test_fbv_header(self):
         params = {'name': 'Connor', 'age': '18'}
-        _, resp = self.app.get("/fbv_header_test", headers={'name': 'Connor', 'age': '18'})
+        _, resp = self.app.get(
+            "/fbv_header_test",
+            headers={'name': 'Connor', 'age': '18'}
+        )
         print(resp.json)
         self.assertEqual(resp.status_code, 200)
 

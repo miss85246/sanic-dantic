@@ -8,7 +8,8 @@ setuptools.setup(
     version="1.2.0",
     author="Connor Zhang",
     author_email="chzhangyue@outlook.com",
-    description="A request parameter checking and parsing library based on pydantic under the sanic framework",
+    description="A request parameter checking and parsing library " +
+                "based on pydantic under the sanic framework",
     install_requires=['pydantic>=1.9.0'],
     long_description=long_description,
     long_description_content_type="text/markdown",
