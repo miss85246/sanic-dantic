@@ -13,6 +13,5 @@ __all__ = pydantic.__all__ + [
     "DanticView",
     "parse_params",
     "ParsedArgsObj",
-    "DanticModelObj",
-    "BaseModel",
+    "DanticModelObj"
 ]
