@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+from copy import deepcopy
 from inspect import getmro
 from typing import Type
 
@@ -14,6 +15,9 @@ class ParsedArgsObj(dict):
 
     def __setattr__(self, key, value):
         self.update({key: value})
+
+    def __deepcopy__(self, memo=None):
+        return ParsedArgsObj(deepcopy(dict(self), memo=memo))
 
 
 class DanticModelObj:

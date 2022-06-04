@@ -14,7 +14,7 @@ from sanic.response import json
 from sanic.views import HTTPMethodView
 
 from dantic_model import Person
-from sanic_dantic import parse_params, DanticView
+from sanic_dantic import DanticView, parse_params
 
 app = Sanic("test_server")
 
@@ -31,37 +31,57 @@ class HttpPersonView(HTTPMethodView):
     ]
 
     @staticmethod
-    async def get(request):
-        return json({"params": request.ctx.params})
+    async def get(request, params):
+        return json({
+            "params1": request.ctx.params,
+            "params2": params
+        })
 
-    @staticmethod
     @parse_params(body=Person)
-    async def post(request):
-        return json({"params": request.ctx.params})
+    async def post(self, request, params):
+        return json({
+            "params1": request.ctx.params,
+            "params2": params
+        })
 
     @staticmethod
-    async def put(request):
-        return json({"params": request.ctx.params})
+    async def put(request, params):
+        return json({
+            "params1": request.ctx.params,
+            "params2": params
+        })
 
 
 class DanticPersonView(DanticView):
 
-    async def post(self, request):
-        return json({"params": self.params})
+    async def post(self, request, params):
+        return json({
+            "params1": request.ctx.params,
+            "params2": params,
+            "params3": self.params
+        })
 
     def post_model(self):
         return self.DanticModel(form=Person)
 
-    async def get(self, request):
-        return json({"params": self.params})
+    async def get(self, request, params):
+        return json({
+            "params1": request.ctx.params,
+            "params2": params,
+            "params3": self.params
+        })
 
     def get_model(self):
         return self.DanticModel(query=Person, error=CustomException)
 
 
 class DanticPathPersonView(DanticView):
-    async def get(self, request, name, age):
-        return json({"params": self.params})
+    async def get(self, request, name, age, params):
+        return json({
+            "params1": request.ctx.params,
+            "params2": params,
+            "params3": self.params
+        })
 
     def get_model(self):
         return self.DanticModel(path=Person)

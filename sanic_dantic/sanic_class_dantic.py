@@ -69,4 +69,5 @@ class DanticView(HTTPMethodView):
             parsed_args = validate(request, **model_obj.items)
             request.ctx.params = parsed_args
             self.params = parsed_args
+            kwargs.update({"params": parsed_args})
         return handler(request, *args, **kwargs)

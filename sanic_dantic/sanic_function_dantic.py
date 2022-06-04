@@ -52,10 +52,11 @@ def parse_params(
                     error=error
                 )
                 params = validate(_request, **model_obj.items)
-                if len(f.__qualname__.split(".")) == 1:
-                    if path:
-                        [kwargs.pop(key) for key in path.__fields__]
-                    args = (params, *args)
+                # if len(f.__qualname__.split(".")) == 1:
+                if path:
+                    for key in path.__fields__:
+                        kwargs.pop(key)
+                kwargs.update({"params": params})
             return await f(request, *args, **kwargs)
 
         return decorated_function
