@@ -4,7 +4,7 @@
 FileName: cbv_server.py
 Description:
 Author: Connor Zhang
-Email: zhangyue@datagrand.com
+Email: chzhangyue@qq.com
 CreateTime: 2022-05-08
 """
 

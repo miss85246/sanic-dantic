@@ -4,7 +4,7 @@
 FileName: other_test
 Description:
 Author: Connor Zhang
-Email: zhangyue@datagrand.com
+Email: chzhangyue@qq.com
 CreateTime: 2022-06-04
 """
 
