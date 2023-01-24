@@ -15,37 +15,24 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        python-version: [ '3.8', '3.9', '3.10' ]
+        python-version: [ '3.8', '3.9', '3.10', '3.11' ]
 
     steps:
       - uses: actions/checkout@v2
+
       - name: Set up Python ${{ matrix.python-version }}
         uses: actions/setup-python@v2
         with:
           python-version: ${{ matrix.python-version }}
+
       - name: Install dependencies
         run: |
-          python -m pip install --upgrade pip
-          python -m pip install flake8 pytest pydantic sanic sanic_testing
-          if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
-      - name: Lint with flake8
-        run: |
-          # stop the build if there are Python syntax errors or undefined names
-          flake8 . --count --select=E9,F63,F7,F82 --show-source --statistics
-          # exit-zero treats all errors as warnings. The GitHub editor is 127 chars wide
-          flake8 . --count --exit-zero --max-complexity=10 --max-line-length=127 --statistics
-      - name: Test with unittest
+          python -m pip install -U wheel pip setuptools
+          python -m pip install -U flake8 pytest pydantic sanic sanic_testing
+
+      - name: Test with Pytest
         run: |
           python setup.py install
           cd tests
-          python fbv_test.py
-          python cbv_test.py
-      - name: Codecov
-        # You may pin to the exact commit or the version.
-        # uses: codecov/codecov-action@1fc7722ded4708880a5aea49f2bfafb9336f0c8d
-        uses: codecov/codecov-action@v1.1.1
-        with:
-          # User defined upload name. Visible in Codecov UI
-          name: sanic-dantic
-          # Repository upload token - get it from codecov.io. Required only for private repositories
-          token: 4296f81e-c47a-4427-b383-26eaed93c1c7
+          pytest -vs --disable-warnings --quiet --junit-xml=./report.xml
+
