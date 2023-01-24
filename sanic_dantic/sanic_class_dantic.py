@@ -1,5 +1,13 @@
-# -*- coding: utf-8 -*-
-# import asyncio
+# !/usr/bin/env python
+# -*- coding:utf-8 -*-
+"""
+FileName: sanic_class_dantic.py
+Description:
+Author: Connor Zhang
+CreateTime:  2023-01-23
+"""
+
+from typing import Coroutine
 
 from sanic.request import Request
 from sanic.views import HTTPMethodView
@@ -9,38 +17,18 @@ from .basic_definition import DanticModelObj, validate
 
 class DanticView(HTTPMethodView):
     """
-    Simple view inherited from HTTPMethodView
-    You should implement methods
-    (get, post, put, patch, delete)
-    for the class And should implement models
-    (get_model, post_model, put_model, patch_model, delete_model)
-    for the class to implement every HTTP request and request parameter
-    type check that you want to support.
+    请求参数检查类视图基类，继承自 sanic.views.HTTPMethodView，有三种方式来定义参数检查：
 
-    For example:
+    - 直接通过 `parse_params` 装饰器来为指定的请求方法添加参数检查。
+    - 通过将检查参数放入到 `HTTPMethodView.decorators` 中来添加参数检查。
+    - 通过定义对应的 `{method}_model` 方法来添加参数检查。[暂不支持 async 方法]
 
-        class Person(BaseModel):
-            name:str
-            age:int
+    parameter check class view base class, inherit from sanic.HTTPMethodView,
+    there are three ways to define parameter check:
 
-        class DummyView(HTTPMethodView):
-            def get(self, request, *args, **kwargs):
-                return text('I am get method')
-            def put(self, request, *args, **kwargs):
-                return text('I am put method')
-            def get_model(self):
-                return self.DanticModel(query=Person)
-            def post_model(self)
-                return self.DanticModel(body=Person)
-    etc.
-
-    If someone tries to use a non-implemented method, there will be a
-    405 response.
-
-    If someone tries to use method, and you didn't give it method model,
-    It will just like a common method
-
-    Any other use method is the same as HTTPMethodView
+    - directly use `parse_params` decorator to add for specified request method.
+    - add by putting check parameters into `HTTPMethodView.decorators`.
+    - define `{method}_model` method to add. [not support async method]
     """
 
     DanticModel = DanticModelObj
@@ -48,26 +36,32 @@ class DanticView(HTTPMethodView):
 
     def dispatch_request(self, request: Request, *args, **kwargs):
         """
-        The DanticView dispatch method, It's inherit from HTTPMethodView
+        继承自 HTTPMethodView，重写了 dispatch_request 方法，添加了参数检查的逻辑。
 
-        The request.app.ctx namespace will be set to DanticView properties
-
-        before into the method, it will check method_model and validate
-        the request.
-
-        other usage is the same as HTTPMethodView
+        inherit from HTTPMethodView, rewrite dispatch_request method, add
+        parameter check logic.
         """
-
-        for key, value in request.app.ctx.__dict__.items():
-            setattr(self, key, value)
 
         method = request.method.lower()
         handler = getattr(self, method, None)
         model_handler = getattr(self, f'{method}_model', None)
+
         if model_handler:
             model_obj = model_handler()
-            parsed_args = validate(request, **model_obj.items)
+            parsed_args = validate(request, model_obj)
+            if isinstance(parsed_args, Coroutine):
+                return parsed_args
             request.ctx.params = parsed_args
-            self.params = parsed_args
+
+            # remove path params from kwargs
+            if model_obj.path:
+                for key in model_obj.path.__fields__:
+                    kwargs.pop(key)
+
             kwargs.update({"params": parsed_args})
+
+        # set request.app.ctx to DanticView properties
+        for key, val in request.app.ctx.__dict__.items():
+            setattr(request.ctx, key, val)
+
         return handler(request, *args, **kwargs)
