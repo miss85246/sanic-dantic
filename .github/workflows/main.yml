@@ -11,7 +11,6 @@ on:
 
 jobs:
   build:
-    if: github.ref == 'refs/heads/main' || github.event_name == 'pull_request'
     runs-on: ubuntu-latest
     strategy:
       matrix:
@@ -32,6 +31,7 @@ jobs:
 
       - name: Test with Pytest
         run: |
+          echo ${{github.ref}}
           python setup.py install
           cd tests
           pytest -vs --disable-warnings --quiet --junit-xml=./report.xml
