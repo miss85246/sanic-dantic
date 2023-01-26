@@ -3,10 +3,15 @@
 
 name: Python package
 
+on:
+  push:
+    branches: [ main docs ]
+  pull_request:
+    branches: [ main ]
 
 jobs:
   build:
-    branches: [ main ]
+    if: github.ref == 'refs/heads/main' || github.event_name == 'pull_request'
     runs-on: ubuntu-latest
     strategy:
       matrix:
@@ -32,7 +37,7 @@ jobs:
           pytest -vs --disable-warnings --quiet --junit-xml=./report.xml
 
   deploy:
-    branches: [ docs ]
+    if: github.ref == 'refs/heads/docs'
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
