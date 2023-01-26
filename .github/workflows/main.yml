@@ -33,8 +33,6 @@ jobs:
 
       - name: Test with Pytest
         run: |
-          env
-          echo "==========================="
           python setup.py install
           cd tests
           pytest -vs --disable-warnings --quiet --junit-xml=./report.xml
