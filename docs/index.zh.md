@@ -1,3 +1,10 @@
+---
+hide:
+
+- toc
+
+---
+
 # sanic-dantic
 
 [![Build Status](https://img.shields.io/endpoint.svg?url=https%3A%2F%2Factions-badge.atrox.dev%2Fmiss85246%2Fsanic-dantic%2Fbadge%3Fref%3Dmain&style=flat)](https://actions-badge.atrox.dev/miss85246/sanic-dantic/goto?ref=main)
@@ -7,39 +14,8 @@
 [![PyPI - License](https://img.shields.io/pypi/l/sanic-dantic)](https://pypi.org/project/sanic-dantic/)
 [![Docs](https://img.shields.io/badge/docs-passing-brightgreen)](https://miss85246.github.io/sanic-dantic/)
 
-This is the Chinese version of the README.md file. If you want to read the
-English version, please click [here](README.md).
-
-## 简介
-
 sanic-dantic 是一个基于 sanic 框架下的请求参数检查和解析库。它基于
 pydantic，可以帮助开发者快速检查和获取请求参数。
-
-## 为什么要使用它？
-
-在很多时候，我们需要对请求参数进行检查和解析，而 sanic 框架本身并没有提供，
-所以我们需要自己实现。大部分情况下，您可能需要这样实现：
-
-```python
-from sanic import Sanic
-from sanic.response import json
-
-app = Sanic("SanicDanticExample")
-
-
-@app.route('/example')
-async def path_param_examples(request):
-    name = request.get("name")
-    age = request.get("age")
-    if not isinstance(name, str) or not isinstance(age, int):
-        return json({"error": "parameter type error"})
-    return json({"message": f"hello {name} are you {age} years old ?"})
-```
-
-这样的代码看起来很简单，但是当您的参数变多的时候，您就会发现，您需要写很多。
-这是一种糟糕的实现方式，因为它不是可维护的。所以我们需要一个更好的方式来实现。
-
-sanic-dantic 可以帮助您快速的实现参数检查和解析。
 
 ## 安装
 

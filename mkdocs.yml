@@ -1,0 +1,40 @@
+site_name: sanic-dantic
+repo_url: https://github.com/miss85246/sanic-dantic
+copyright: © 2020 - 2023 miss85246
+
+theme:
+  name: material
+
+
+nav:
+  - Introduction: index.md
+  - Why Use It: why_use_it.md
+  - QuickStart: quickstart.en.md
+  - Function Based View: function_based_view.en.md
+  - Class Based View: class_based_view.en.md
+  - API References: api_reference.en.md
+
+markdown_extensions:
+  - admonition
+  - pymdownx.details
+  - pymdownx.superfences
+
+plugins:
+  - i18n:
+      default_language: en
+      languages:
+        en:
+          name: English
+          build: true
+        zh:
+          name: 简体中文
+          build: true
+
+      nav_translations:
+        zh:
+          Introduction: 介绍
+          Why Use It: 为什么使用它
+          QuickStart: 快速开始
+          Function Based View: 基于函数视图的使用方法
+          Class Based View: 基于类视图的使用方法
+          API References: API 参考
