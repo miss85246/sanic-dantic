@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:xhtml="http://www.w3.org/1999/xhtml">
+    <url>
+         <loc>Noneapi_reference/</loc>
+         <lastmod>2023-01-26</lastmod>
+         <changefreq>daily</changefreq>
+         <xhtml:link rel="alternate" hreflang="en" href="Noneen/api_reference/"/>
+         <xhtml:link rel="alternate" hreflang="zh" href="Nonezh/api_reference/"/>
+         
+    </url>
+    <url>
+         <loc>Noneclass_based_view/</loc>
+         <lastmod>2023-01-26</lastmod>
+         <changefreq>daily</changefreq>
+         <xhtml:link rel="alternate" hreflang="en" href="Noneen/class_based_view/"/>
+         <xhtml:link rel="alternate" hreflang="zh" href="Nonezh/class_based_view/"/>
+         
+    </url>
+    <url>
+         <loc>Nonefunction_based_view/</loc>
+         <lastmod>2023-01-26</lastmod>
+         <changefreq>daily</changefreq>
+         <xhtml:link rel="alternate" hreflang="en" href="Noneen/function_based_view/"/>
+         <xhtml:link rel="alternate" hreflang="zh" href="Nonezh/function_based_view/"/>
+         
+    </url>
+    <url>
+         <loc>None./</loc>
+         <lastmod>2023-01-26</lastmod>
+         <changefreq>daily</changefreq>
+         <xhtml:link rel="alternate" hreflang="en" href="Noneen/"/>
+         <xhtml:link rel="alternate" hreflang="zh" href="Nonezh/"/>
+         
+    </url>
+    <url>
+         <loc>Nonequickstart/</loc>
+         <lastmod>2023-01-26</lastmod>
+         <changefreq>daily</changefreq>
+         <xhtml:link rel="alternate" hreflang="en" href="Noneen/quickstart/"/>
+         <xhtml:link rel="alternate" hreflang="zh" href="Nonezh/quickstart/"/>
+         
+    </url>
+    <url>
+         <loc>Nonewhy_use_it/</loc>
+         <lastmod>2023-01-26</lastmod>
+         <changefreq>daily</changefreq>
+         <xhtml:link rel="alternate" hreflang="en" href="Noneen/why_use_it/"/>
+         <xhtml:link rel="alternate" hreflang="zh" href="Nonezh/why_use_it/"/>
+         
+    </url>
+</urlset>
