@@ -113,7 +113,7 @@ age: 18
 [pydantic 官方文档](https://pydantic-docs.helpmanual.io/usage/models/)。
 
 更过 sanic-dantic 的使用方法可以参考
-[sanic-dantic 文档](https://sanic-dantic.readthedocs.io/en/latest/)。
+[sanic-dantic 文档](https://miss85246.github.io/sanic-dantic/zh/)。
 
 ## 开源协议
 

@@ -19,8 +19,8 @@ app = Sanic("SanicDanticExample")
 
 @app.route('/example')
 async def path_param_examples(request):
-    name = request.get("name")
-    age = request.get("age")
+    name = request.args.get("name")
+    age = request.args.get("age")
     if not isinstance(name, str) or not isinstance(age, int):
         return json({"error": "parameter type error"})
     return json({"message": f"hello {name} are you {age} years old ?"})
