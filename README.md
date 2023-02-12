@@ -139,7 +139,7 @@ more pydantic usage can see
 [pydantic documentation](https://pydantic-docs.helpmanual.io/usage/models/)。
 
 more sanic-dantic advanced usage can see
-[sanic-dantic documentation]()。
+[sanic-dantic documentation](https://miss85246.github.io/sanic-dantic/)。
 
 ## License
 
